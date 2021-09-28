@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d95489ec-3d1f-48f8-8a53-b9dc26fff1d6" name="Changes" comment="" />
+    <list default="true" id="d95489ec-3d1f-48f8-8a53-b9dc26fff1d6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -46,7 +48,7 @@
       <method v="2" />
     </configuration>
     <configuration name="antlr-gen" type="ShConfigurationType">
-      <option name="SCRIPT_TEXT" value="antlr4 ./coffee-antlr-data/Coffee.g4 -Dlanguage=Python3 -no-listener -visitor -o ./" />
+      <option name="SCRIPT_TEXT" value="antlr4 ./Coffee.g4 -Dlanguage=Python3 -no-listener -visitor" />
       <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
       <option name="SCRIPT_PATH" value="" />
       <option name="SCRIPT_OPTIONS" value="" />
@@ -74,7 +76,7 @@
       <option name="presentableId" value="Default" />
       <updated>1632821807357</updated>
       <workItem from="1632821812184" duration="117000" />
-      <workItem from="1632822208314" duration="1161000" />
+      <workItem from="1632822208314" duration="1907000" />
     </task>
     <servers />
   </component>
