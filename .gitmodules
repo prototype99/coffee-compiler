@@ -1,0 +1,3 @@
+[submodule "coffee-antlr-data"]
+	path = coffee-antlr-data
+	url = https://github.com/prototype99/coffee-antlr-data.git
