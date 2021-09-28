@@ -15,7 +15,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
 # load source code
 filein = open('./test.coffee', 'r')
-source_code = filein.read();
+source_code = filein.read()
 filein.close()
 
 # create a token stream from source code
