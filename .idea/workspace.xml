@@ -19,10 +19,10 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/semantics.py" />
     <property name="settings.editor.selected.configurable" value="preferences.customizations" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Shell Script.antlr-gen">
     <configuration name="run" type="PythonConfigurationType" factoryName="Python">
       <module name="coffee-compiler" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -45,6 +45,25 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="antlr-gen" type="ShConfigurationType">
+      <option name="SCRIPT_TEXT" value="antlr4 ./coffee-antlr-data/Coffee.g4 -Dlanguage=Python3 -no-listener -visitor" />
+      <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
+      <option name="SCRIPT_PATH" value="" />
+      <option name="SCRIPT_OPTIONS" value="" />
+      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+      <option name="INTERPRETER_PATH" value="/bin/bash" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="EXECUTE_IN_TERMINAL" value="true" />
+      <option name="EXECUTE_SCRIPT_FILE" value="false" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.run" />
+      <item itemvalue="Shell Script.antlr-gen" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -55,7 +74,7 @@
       <option name="presentableId" value="Default" />
       <updated>1632821807357</updated>
       <workItem from="1632821812184" duration="117000" />
-      <workItem from="1632822208314" duration="348000" />
+      <workItem from="1632822208314" duration="1161000" />
     </task>
     <servers />
   </component>
