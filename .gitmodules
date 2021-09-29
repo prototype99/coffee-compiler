@@ -1,3 +1,6 @@
 [submodule "coffee-antlr-data"]
 	path = coffee-antlr-data
 	url = https://github.com/prototype99/coffee-antlr-data.git
+[submodule "official-compiler"]
+	path = official-compiler
+	url = https://github.com/ryanjpc/CoffeeRelease.git
