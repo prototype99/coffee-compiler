@@ -16,12 +16,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.stbl.popFrame()
 
     def visitBlock(self, ctx):
-        if (ctx.LCURLY() != None):
+        if ctx.LCURLY() != None:
             self.stbl.pushScope()
 
         self.visitChildren(ctx)
 
-        if (ctx.LCURLY() != None):
+        if ctx.LCURLY() != None:
             self.stbl.popScope()
 
     def visitGlobal_decl(self, ctx):
@@ -33,11 +33,11 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             var_array = False
 
             var = self.stbl.peek(var_id)
-            if (var != None):
+            if var != None:
                 print('error')
 
             # checking for arrays
-            if (ctx.var_decl().var_assign(i).var().INT_LIT() != None):
+            if ctx.var_decl().var_assign(i).var().INT_LIT() != None:
                 print(ctx.var_decl().var_assign(i).var().INT_LIT().getText())
 
             var = Var(var_id,
@@ -57,7 +57,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             var_array = False
 
             var = self.stbl.peek(var_id)
-            if (var != None):
+            if var != None:
                 print('error')
 
             var = Var(var_id,
@@ -71,7 +71,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
 # load source code
 filein = open('./test.coffee', 'r')
-source_code = filein.read();
+source_code = filein.read()
 filein.close()
 
 # create a token stream from source code
