@@ -72,7 +72,9 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         line = ctx.start.line
         method_id = ctx.ID().getText()
         method_type = ctx.return_type().getText()
-        # TODO: semantic rule 3
+        method = self.stbl.peek(method_id)
+        if method is not None:
+            print('error on line ' + str(line) + ': var \'' + method_id + '\' already declared on line ' + str(method.line))
         method = Method(method_id, method_type, line)
         self.stbl.pushMethod(method)
         self.stbl.pushFrame(method)
