@@ -11,3 +11,8 @@ float a = 1;
 }
 
 a = a + b;
+
+void foo(int a, float a, float b) {
+  int b;
+  return 0;
+}
