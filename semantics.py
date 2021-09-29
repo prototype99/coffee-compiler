@@ -81,7 +81,9 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             var_type = ctx.param(i).data_type().getText()
             var_size = 8
             var_array = False
-            # TODO: semantic rule 2
+            var = self.stbl.peek(var_id)
+            if var is not None:
+                print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(var.line))
             method.pushParam(var_type)
         self.visit(ctx.block())
         self.stbl.popFrame()
