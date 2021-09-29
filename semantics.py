@@ -11,6 +11,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
     def visitBlock(self, ctx):
         if ctx.LCURLY() is not None:
+            method = Method('main', 'int', ctx.start.line)
             self.stbl.pushFrame(method)
             self.visitChildren(ctx)
             self.stbl.popFrame()
