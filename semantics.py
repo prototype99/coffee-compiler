@@ -68,6 +68,24 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                       line)
             self.stbl.pushVar(var)
 
+    def visitMethod_decl(self, ctx):
+        line = ctx.start.line
+        method_id = ctx.ID().getText()
+        method_type = ctx.return_type().getText()
+        # TODO: semantic rule 3
+        method = Method(method_id, method_type, line)
+        self.stbl.pushMethod(method)
+        self.stbl.pushFrame(method)
+        for i in range(len(ctx.param())):
+            var_id = ctx.param(i).ID().getText()
+            var_type = ctx.param(i).data_type().getText()
+            var_size = 8
+            var_array = False
+            # TODO: semantic rule 2
+            method.pushParam(var_type)
+        self.visit(ctx.block())
+        self.stbl.popFrame()
+
 
 # load source code
 filein = open('./test.coffee', 'r')
