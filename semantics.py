@@ -58,7 +58,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
             var = self.stbl.peek(var_id)
             if var is not None:
-                print('error')
+                print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(var.line))
 
             var = Var(var_id,
                       var_type,
