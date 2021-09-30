@@ -98,7 +98,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.stbl.popFrame()
 
     def visitExpr(self, ctx):
-        if (ctx.literal() != None):
+        if (ctx.literal() is not None):
             return self.visit(ctx.literal())
         else:
             return self.visitChildren(ctx)
