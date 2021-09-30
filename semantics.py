@@ -88,11 +88,11 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                 print('error on line ' + str(line) + ': param \'' + param_id + '\' already declared on line ' + str(param.line))
             method.pushParam(param_type)
             param = Var(param_id,
-                      param_type,
-                      param_size,
-                      Var.LOCAL,
-                      param_array,
-                      line)
+                        param_type,
+                        param_size,
+                        Var.LOCAL,
+                        param_array,
+                        line)
             self.stbl.pushVar(param)
         self.visit(ctx.block())
         self.stbl.popFrame()
