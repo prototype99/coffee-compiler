@@ -5,6 +5,8 @@
 float g = 1;
 float g;
 
+return g + 2;
+
 {
   int m = 2;
   int m;
