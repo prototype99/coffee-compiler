@@ -16,3 +16,8 @@ void foo(int a, float a, float b) {
   int b;
   return 0;
 }
+
+void foo(int a, float a, float b) {
+  int b;
+  return 0;
+}
