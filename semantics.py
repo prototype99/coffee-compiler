@@ -97,6 +97,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.visit(ctx.block())
         self.stbl.popFrame()
 
+    def visitExpr(self, ctx):
+        if (ctx.literal() != None):
+            return self.visit(ctx.literal())
+        else:
+            return self.visitChildren(ctx)
+
 
 # load source code
 filein = open('./test.coffee', 'r')
