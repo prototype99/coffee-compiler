@@ -100,6 +100,8 @@ class CoffeeTreeVisitor(CoffeeVisitor):
     def visitExpr(self, ctx):
         if ctx.literal() is not None:
             return self.visit(ctx.literal())
+        elif ctx.location() is not None:
+            return self.visit(ctx.location())
         else:
             return self.visitChildren(ctx)
 
