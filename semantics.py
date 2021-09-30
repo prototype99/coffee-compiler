@@ -103,6 +103,18 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         else:
             return self.visitChildren(ctx)
 
+    def visitLiteral(self, ctx):
+        if ctx.bool_lit() is not None:
+            return 'bool'
+        if ctx.INT_LIT() is not None:
+            return 'int'
+        if ctx.CHAR_LIT() is not None:
+            return 'char'
+        if ctx.FLOAT_LIT() is not None:
+            return 'float'
+        if ctx.STRING_LIT() is not None:
+            return 'string'
+
 
 # load source code
 filein = open('./test.coffee', 'r')

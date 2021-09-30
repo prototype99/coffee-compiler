@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d95489ec-3d1f-48f8-8a53-b9dc26fff1d6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/semantics.py" beforeDir="false" afterPath="$PROJECT_DIR$/semantics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.coffee" beforeDir="false" afterPath="$PROJECT_DIR$/test.coffee" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,7 +113,7 @@
       <workItem from="1632821812184" duration="117000" />
       <workItem from="1632822208314" duration="4563000" />
       <workItem from="1632919481433" duration="9105000" />
-      <workItem from="1633004703907" duration="4490000" />
+      <workItem from="1633004703907" duration="5766000" />
     </task>
     <servers />
   </component>
@@ -119,6 +121,6 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/coffee_compiler$run.coverage" NAME="run Coverage Results" MODIFIED="1633008861152" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/coffee_compiler$run.coverage" NAME="run Coverage Results" MODIFIED="1633010270985" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
