@@ -34,7 +34,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
             var = self.stbl.peek(var_id)
             if var is not None:
-                print('error')
+                print('error on line ' + str(line) + ': global var \'' + var_id + '\' already declared on line ' + str(var.line))
 
             # checking for arrays
             if ctx.var_decl().var_assign(i).var().INT_LIT() is not None:
@@ -58,7 +58,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
             var = self.stbl.peek(var_id)
             if var is not None:
-                print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(var.line))
+                print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(var.line) + ' in same scope')
 
             var = Var(var_id,
                       var_type,

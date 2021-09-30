@@ -2,11 +2,12 @@
   example Coffee program
 */
 
-float a = 1;
+float g = 1;
+float g;
 
 {
-  int b = 2;
-  int b;
+  int m = 2;
+  int m;
   int a;
 }
 
