@@ -3,5 +3,6 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/coffee-antlr-data" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/official-compiler" vcs="Git" />
   </component>
 </project>
