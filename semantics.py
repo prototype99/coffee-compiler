@@ -85,7 +85,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             var_array = False
             var = self.stbl.peek(var_id)
             if var is not None:
-                print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(var.line))
+                print('error on line ' + str(line) + ': param \'' + var_id + '\' already declared on line ' + str(var.line))
             method.pushParam(var_type)
         self.visit(ctx.block())
         self.stbl.popFrame()
