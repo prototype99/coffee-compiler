@@ -111,6 +111,8 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                 return 'int'
             if expr0_type == 'bool' or expr1_type == 'bool':
                 return 'bool'
+        elif ctx.data_type() is not None:
+            return ctx.data_type()
         else:
             return self.visitChildren(ctx)
 
