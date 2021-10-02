@@ -117,6 +117,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         if ctx.STRING_LIT() is not None:
             return 'string'
 
+    def visitLocation(self, ctx):
+        if ctx.expr() is not None:
+            return 'var'
+        if ctx.LSQUARE() is not None:
+            return 'array'
+
 
 # load source code
 filein = open('./test.coffee', 'r')
