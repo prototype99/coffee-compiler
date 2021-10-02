@@ -102,6 +102,10 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             return self.visit(ctx.literal())
         elif ctx.location() is not None:
             return self.visit(ctx.location())
+        elif len(ctx.expr()) == 2:
+            expr0_type = self.visit(ctx.expr(0))
+            expr1_type = self.visit(ctx.expr(1))
+            # TODO: return highest precedence type
         else:
             return self.visitChildren(ctx)
 
