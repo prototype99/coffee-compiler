@@ -105,7 +105,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         elif len(ctx.expr()) == 2:
             expr0_type = self.visit(ctx.expr(0))
             expr1_type = self.visit(ctx.expr(1))
-            # TODO: return highest precedence type
+            if expr0_type == 'float' or expr1_type == 'float':
+                return 'float'
+            if expr0_type == 'int' or expr1_type == 'int':
+                return 'int'
+            if expr0_type == 'bool' or expr1_type == 'bool':
+                return 'bool'
         else:
             return self.visitChildren(ctx)
 
