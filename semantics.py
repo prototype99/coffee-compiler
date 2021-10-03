@@ -39,7 +39,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             # checking for arrays
             if ctx.var_decl().var_assign(i).var().INT_LIT() is not None:
                 var_size = ctx.var_decl().var_assign(i).var().INT_LIT().getText() * 8
-                if var_size == 0:
+                if int(var_size) == 0:
                     print('error on line ' + str(line) + ': global var array \'' + var_id + '\' has an illegal zero length')
                 var_array = True
 

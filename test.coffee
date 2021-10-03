@@ -4,7 +4,7 @@
 
 float g = 1;
 float g;
-int arr[2];
+int arr[0];
 
 return g + 2;
 
