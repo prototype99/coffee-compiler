@@ -38,7 +38,8 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
             # checking for arrays
             if ctx.var_decl().var_assign(i).var().INT_LIT() is not None:
-                print(ctx.var_decl().var_assign(i).var().INT_LIT().getText())
+                var_size = ctx.var_decl().var_assign(i).var().INT_LIT().getText() * 8
+                var_array = True
 
             var = Var(var_id,
                       var_type,
