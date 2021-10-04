@@ -136,6 +136,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             return 'var'
         if ctx.LSQUARE() is not None:
             return 'array'
+        # find for global! not peek!
 
 
 # load source code

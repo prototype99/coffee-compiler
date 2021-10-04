@@ -4,7 +4,6 @@
     <list default="true" id="d95489ec-3d1f-48f8-8a53-b9dc26fff1d6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/semantics.py" beforeDir="false" afterPath="$PROJECT_DIR$/semantics.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.coffee" beforeDir="false" afterPath="$PROJECT_DIR$/test.coffee" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,9 +96,9 @@
     </configuration>
     <list>
       <item itemvalue="Python.run" />
-      <item itemvalue="Shell Script.gen-tree" />
-      <item itemvalue="Shell Script.compile-test" />
       <item itemvalue="Shell Script.antlr-gen" />
+      <item itemvalue="Shell Script.compile-test" />
+      <item itemvalue="Shell Script.gen-tree" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
