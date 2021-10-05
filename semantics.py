@@ -94,6 +94,14 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         method = Method(method_id, method_type, line)
         self.stbl.pushMethod(method)
         self.stbl.pushFrame(method)
+        method.body += method.id + ':\n'
+        method.body += 'push %rbp\n'
+        method.body += 'movq %rsp, %rbp\n'
+        if not method.has_return:
+            method.body += 'pop %rbp\n'
+            method.body += 'ret\n'
+        self.data += method.data
+        self.body += method.body
         for i in range(len(ctx.param())):
             param_id = ctx.param(i).ID().getText()
             param_type = ctx.param(i).data_type().getText()
