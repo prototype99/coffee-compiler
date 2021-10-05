@@ -1,4 +1,5 @@
 import antlr4 as antlr
+import os
 from CoffeeLexer import CoffeeLexer
 from CoffeeVisitor import CoffeeVisitor
 from CoffeeParser import CoffeeParser
@@ -180,6 +181,4 @@ fileout.write(code)
 fileout.close()
 
 # assemble and link
-import os
-
 os.system("gcc a.s -lm ; ./a.out ; echo $?")
