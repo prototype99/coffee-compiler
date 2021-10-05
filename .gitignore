@@ -78,3 +78,5 @@ CoffeeParser$WhileContext.class
 CoffeeParser.class
 
 CoffeeParser.java
+
+.idea/workspace.xml
