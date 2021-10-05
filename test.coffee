@@ -25,3 +25,9 @@ void foo(int a, float a, float b) {
   int b;
   return 0;
 }
+
+int inc(int a) {
+  return a + 1;
+}
+
+return inc(2);
