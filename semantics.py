@@ -45,13 +45,15 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
             var = self.stbl.peek(var_id)
             if var is not None:
-                print('error on line ' + str(line) + ': global var \'' + var_id + '\' already declared on line ' + str(var.line))
+                print('error on line ' + str(line) + ': global var \'' + var_id + '\' already declared on line ' + str(
+                    var.line))
 
             # checking for arrays
             if ctx.var_decl().var_assign(i).var().INT_LIT() is not None:
                 var_size = ctx.var_decl().var_assign(i).var().INT_LIT().getText() * 8
                 if int(var_size) == 0:
-                    print('error on line ' + str(line) + ': global var array \'' + var_id + '\' has an illegal zero length')
+                    print('error on line ' + str(
+                        line) + ': global var array \'' + var_id + '\' has an illegal zero length')
                 var_array = True
 
             var = Var(var_id,
@@ -72,7 +74,8 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
             var = self.stbl.peek(var_id)
             if var is not None:
-                print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(var.line) + ' in same scope')
+                print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(
+                    var.line) + ' in same scope')
 
             var = Var(var_id,
                       var_type,
@@ -88,7 +91,8 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         method_type = ctx.return_type().getText()
         method = self.stbl.peek(method_id)
         if method is not None:
-            print('error on line ' + str(line) + ': method \'' + method_id + '\' already declared on line ' + str(method.line))
+            print('error on line ' + str(line) + ': method \'' + method_id + '\' already declared on line ' + str(
+                method.line))
         method = Method(method_id, method_type, line)
         self.stbl.pushMethod(method)
         self.stbl.pushFrame(method)
@@ -99,7 +103,8 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             param_array = False
             param = self.stbl.peek(param_id)
             if param is not None:
-                print('error on line ' + str(line) + ': param \'' + param_id + '\' already declared on line ' + str(param.line))
+                print('error on line ' + str(line) + ': param \'' + param_id + '\' already declared on line ' + str(
+                    param.line))
             method.pushParam(param_type)
             param = Var(param_id,
                         param_type,
@@ -169,15 +174,16 @@ visitor = CoffeeTreeVisitor()
 # visit nodes from tree root
 visitor.visit(tree)
 
-#assembly output code
+# assembly output code
 code = visitor.data + visitor.body
 print(code)
 
-#save the assembly file
+# save the assembly file
 fileout = open('a.s', 'w')
 fileout.write(code)
 fileout.close()
 
-#assemble and link
+# assemble and link
 import os
+
 os.system("gcc a.s -lm ; ./a.out ; echo $?")
