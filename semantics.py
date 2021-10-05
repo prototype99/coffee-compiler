@@ -19,7 +19,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         method.body += 'push %rbp\n'
         method.body += 'movq %rsp, %rbp\n'
         self.visitChildren(ctx)
-        if method.has_return == False:
+        if not method.has_return:
             method.body += 'pop %rbp\n'
             method.body += 'ret\n'
         self.data += method.data
