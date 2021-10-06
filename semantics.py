@@ -94,35 +94,35 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             print('error on line ' + str(line) + ': method \'' + method_id + '\' already declared on line ' + str(method.line))
         else:
             print('do method code here lol')
-        method = Method(method_id, method_type, line)
-        self.stbl.pushMethod(method)
-        self.stbl.pushFrame(method)
-        method.body += method.id + ':\n'
-        method.body += 'push %rbp\n'
-        method.body += 'movq %rsp, %rbp\n'
-        if not method.has_return:
-            method.body += 'pop %rbp\n'
-            method.body += 'ret\n'
-        self.data += method.data
-        self.body += method.body
-        for i in range(len(ctx.param())):
-            param_id = ctx.param(i).ID().getText()
-            param_type = ctx.param(i).data_type().getText()
-            param_size = 8
-            param_array = False
-            param = self.stbl.peek(param_id)
-            if param is not None:
-                print('error on line ' + str(line) + ': param \'' + param_id + '\' already declared on line ' + str(param.line))
-            method.pushParam(param_type)
-            param = Var(param_id,
-                        param_type,
-                        param_size,
-                        Var.LOCAL,
-                        param_array,
-                        line)
-            self.stbl.pushVar(param)
-        self.visit(ctx.block())
-        self.stbl.popFrame()
+            method = Method(method_id, method_type, line)
+            self.stbl.pushMethod(method)
+            self.stbl.pushFrame(method)
+            method.body += method.id + ':\n'
+            method.body += 'push %rbp\n'
+            method.body += 'movq %rsp, %rbp\n'
+            if not method.has_return:
+                method.body += 'pop %rbp\n'
+                method.body += 'ret\n'
+            self.data += method.data
+            self.body += method.body
+            for i in range(len(ctx.param())):
+                param_id = ctx.param(i).ID().getText()
+                param_type = ctx.param(i).data_type().getText()
+                param_size = 8
+                param_array = False
+                param = self.stbl.peek(param_id)
+                if param is not None:
+                    print('error on line ' + str(line) + ': param \'' + param_id + '\' already declared on line ' + str(param.line))
+                method.pushParam(param_type)
+                param = Var(param_id,
+                            param_type,
+                            param_size,
+                            Var.LOCAL,
+                            param_array,
+                            line)
+                self.stbl.pushVar(param)
+            self.visit(ctx.block())
+            self.stbl.popFrame()
 
     def visitExpr(self, ctx):
         if ctx.literal() is not None:
