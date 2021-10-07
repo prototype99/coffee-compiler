@@ -155,13 +155,9 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             return 'string'
 
     def visitLocation(self, ctx):
-        # if ctx.expr() is not None:
-        #     return 'var'
-        # if ctx.LSQUARE() is not None:
-        #     return 'array'
-        loc = self.stbl.find(ctx.ID())
+        loc: Var = self.stbl.find(ctx.ID().getText())
         if loc is not None:
-            print(loc.data_type)
+            return loc.data_type
 
 
 # load source code
