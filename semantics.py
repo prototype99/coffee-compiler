@@ -30,6 +30,8 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
     def visitBlock(self, ctx):
         if ctx.LCURLY() is not None:
+            method_ctx = self.stbl.getMethodContext()
+            method_ctx.body += '# method body here\n'
             self.stbl.pushScope()
 
         self.visitChildren(ctx)
@@ -99,6 +101,10 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             method.body += method.id + ':\n'
             method.body += 'push %rbp\n'
             method.body += 'movq %rsp, %rbp\n'
+            if ctx.block() is not None:
+                self.visit(ctx.block())
+            else:
+                self.visit(ctx.expr())
             if not method.has_return:
                 method.body += 'pop %rbp\n'
                 method.body += 'ret\n'
