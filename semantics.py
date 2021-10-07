@@ -93,7 +93,6 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         if method is not None:
             print('error on line ' + str(line) + ': method \'' + method_id + '\' already declared on line ' + str(method.line))
         else:
-            print('do method code here lol')
             method = Method(method_id, method_type, line)
             self.stbl.pushMethod(method)
             self.stbl.pushFrame(method)
