@@ -45,7 +45,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             var_size = 8
             var_array = False
 
-            var = self.stbl.peek(var_id)
+            var = self.stbl.find(var_id)
             if var is not None:
                 print('error on line ' + str(line) + ': global var \'' + var_id + '\' already declared on line ' + str(var.line))
 
@@ -89,7 +89,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         line = ctx.start.line
         method_id = ctx.ID().getText()
         method_type = ctx.return_type().getText()
-        method = self.stbl.peek(method_id)
+        method = self.stbl.find(method_id)
         if method is not None:
             print('error on line ' + str(line) + ': method \'' + method_id + '\' already declared on line ' + str(method.line))
         else:
@@ -156,11 +156,13 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             return 'string'
 
     def visitLocation(self, ctx):
-        if ctx.expr() is not None:
-            return 'var'
-        if ctx.LSQUARE() is not None:
-            return 'array'
-        # find for global! not peek!
+        # if ctx.expr() is not None:
+        #     return 'var'
+        # if ctx.LSQUARE() is not None:
+        #     return 'array'
+        loc = self.stbl.find(ctx.ID())
+        if loc is not None:
+            print(loc.data_type)
 
 
 # load source code
