@@ -9,9 +9,9 @@ from CoffeeUtil import Var, Method, Import, Loop, SymbolTable
 
 class CoffeeTreeVisitor(CoffeeVisitor):
     def __init__(self):
-        self.stbl = SymbolTable()
-        self.data = '.data\n'
-        self.body = '.text\n.global main\n'
+        self.stbl: SymbolTable = SymbolTable()
+        self.data: str = '.data\n'
+        self.body: str = '.text\n.global main\n'
 
     def visitProgram(self, ctx):
         method = Method('main', 'int', ctx.start.line)
@@ -38,62 +38,62 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             self.stbl.popScope()
 
     def visitGlobal_decl(self, ctx):
-        line = ctx.start.line
-        var_type = ctx.var_decl().data_type().getText()
+        line: int = ctx.start.line
+        var_type: str = ctx.var_decl().data_type().getText()
         for i in range(len(ctx.var_decl().var_assign())):
-            var_id = ctx.var_decl().var_assign(i).var().ID().getText()
-            var_size = 8
-            var_array = False
+            var_id: str = ctx.var_decl().var_assign(i).var().ID().getText()
+            var_size: int = 8
+            var_array: bool = False
 
-            var = self.stbl.find(var_id)
+            var: Var = self.stbl.find(var_id)
             if var is not None:
                 print('error on line ' + str(line) + ': global var \'' + var_id + '\' already declared on line ' + str(var.line))
 
             # checking for arrays
             if ctx.var_decl().var_assign(i).var().INT_LIT() is not None:
-                var_size = ctx.var_decl().var_assign(i).var().INT_LIT().getText() * 8
+                var_size: int = ctx.var_decl().var_assign(i).var().INT_LIT().getText() * 8
                 if int(var_size) == 0:
                     print('error on line ' + str(line) + ': global var array \'' + var_id + '\' has an illegal zero length')
                 var_array = True
 
-            var = Var(var_id,
-                      var_type,
-                      var_size,
-                      Var.GLOBAL,
-                      var_array,
-                      line)
+            var: Var = Var(var_id,
+                           var_type,
+                           var_size,
+                           Var.GLOBAL,
+                           var_array,
+                           line)
             self.stbl.pushVar(var)
 
     def visitVar_decl(self, ctx):
-        line = ctx.start.line
-        var_type = ctx.data_type().getText()
+        line: int = ctx.start.line
+        var_type: str = ctx.data_type().getText()
         for i in range(len(ctx.var_assign())):
-            var_id = ctx.var_assign(i).var().ID().getText()
-            var_size = 8
-            var_array = False
+            var_id: str = ctx.var_assign(i).var().ID().getText()
+            var_size: int = 8
+            var_array: bool = False
 
-            var = self.stbl.peek(var_id)
+            var: Var = self.stbl.peek(var_id)
             if var is not None:
                 print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(
                     var.line) + ' in same scope')
 
-            var = Var(var_id,
-                      var_type,
-                      var_size,
-                      Var.GLOBAL,
-                      var_array,
-                      line)
+            var: Var = Var(var_id,
+                           var_type,
+                           var_size,
+                           Var.GLOBAL,
+                           var_array,
+                           line)
             self.stbl.pushVar(var)
 
     def visitMethod_decl(self, ctx):
-        line = ctx.start.line
-        method_id = ctx.ID().getText()
-        method_type = ctx.return_type().getText()
-        method = self.stbl.find(method_id)
+        line: int = ctx.start.line
+        method_id: str = ctx.ID().getText()
+        method_type: str = ctx.return_type().getText()
+        method: Method = self.stbl.find(method_id)
         if method is not None:
             print('error on line ' + str(line) + ': method \'' + method_id + '\' already declared on line ' + str(method.line))
         else:
-            method = Method(method_id, method_type, line)
+            method: Method = Method(method_id, method_type, line)
             self.stbl.pushMethod(method)
             self.stbl.pushFrame(method)
             method.body += method.id + ':\n'
@@ -105,20 +105,20 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             self.data += method.data
             self.body += method.body
             for i in range(len(ctx.param())):
-                param_id = ctx.param(i).ID().getText()
-                param_type = ctx.param(i).data_type().getText()
-                param_size = 8
-                param_array = False
-                param = self.stbl.peek(param_id)
+                param_id: str = ctx.param(i).ID().getText()
+                param_type: str = ctx.param(i).data_type().getText()
+                param_size: int = 8
+                param_array: bool = False
+                param: Var = self.stbl.peek(param_id)
                 if param is not None:
                     print('error on line ' + str(line) + ': param \'' + param_id + '\' already declared on line ' + str(param.line))
                 method.pushParam(param_type)
-                param = Var(param_id,
-                            param_type,
-                            param_size,
-                            Var.LOCAL,
-                            param_array,
-                            line)
+                param: Var = Var(param_id,
+                                 param_type,
+                                 param_size,
+                                 Var.LOCAL,
+                                 param_array,
+                                 line)
                 self.stbl.pushVar(param)
             self.visit(ctx.block())
             self.stbl.popFrame()
@@ -129,8 +129,8 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         elif ctx.location() is not None:
             return self.visit(ctx.location())
         elif len(ctx.expr()) == 2:
-            expr0_type = self.visit(ctx.expr(0))
-            expr1_type = self.visit(ctx.expr(1))
+            expr0_type: str = self.visit(ctx.expr(0))
+            expr1_type: str = self.visit(ctx.expr(1))
             if expr0_type == 'float' or expr1_type == 'float':
                 return 'float'
             if expr0_type == 'int' or expr1_type == 'int':
