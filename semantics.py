@@ -153,6 +153,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         if ctx.bool_lit() is not None:
             return 'bool'
         if ctx.INT_LIT() is not None:
+            self.body += 'movq $' + ctx.getText() + ', %rax\n'
             return 'int'
         if ctx.CHAR_LIT() is not None:
             return 'char'
