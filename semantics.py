@@ -101,15 +101,6 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             method.body += method.id + ':\n'
             method.body += 'push %rbp\n'
             method.body += 'movq %rsp, %rbp\n'
-            if ctx.block() is not None:
-                self.visit(ctx.block())
-            else:
-                self.visit(ctx.expr())
-            if not method.has_return:
-                method.body += 'pop %rbp\n'
-                method.body += 'ret\n'
-            self.data += method.data
-            self.body += method.body
             for i in range(len(ctx.param())):
                 param_id: str = ctx.param(i).ID().getText()
                 param_type: str = ctx.param(i).data_type().getText()
@@ -126,8 +117,16 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                                  param_array,
                                  line)
                 self.stbl.pushVar(param)
-            self.visit(ctx.block())
+            if ctx.block() is not None:
+                self.visit(ctx.block())
+            else:
+                self.visit(ctx.expr())
             self.stbl.popFrame()
+            if not method.has_return:
+                method.body += 'pop %rbp\n'
+                method.body += 'ret\n'
+            self.data += method.data
+            self.body += method.body
 
     def visitExpr(self, ctx):
         if ctx.literal() is not None:
