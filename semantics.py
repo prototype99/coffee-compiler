@@ -109,14 +109,15 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                 param: Var = self.stbl.peek(param_id)
                 if param is not None:
                     print('error on line ' + str(line) + ': param \'' + param_id + '\' already declared on line ' + str(param.line))
-                method.pushParam(param_type)
-                param: Var = Var(param_id,
-                                 param_type,
-                                 param_size,
-                                 Var.LOCAL,
-                                 param_array,
-                                 line)
-                self.stbl.pushVar(param)
+                else:
+                    method.pushParam(param_type)
+                    param: Var = Var(param_id,
+                                     param_type,
+                                     param_size,
+                                     Var.LOCAL,
+                                     param_array,
+                                     line)
+                    self.stbl.pushVar(param)
             if ctx.block() is not None:
                 self.visit(ctx.block())
             else:
