@@ -118,6 +118,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                                      param_array,
                                      line)
                     self.stbl.pushVar(param)
+                    method.body += 'movq' + self.stbl.param_reg + str(param.addr) + '(%rbp)'
             if ctx.block() is not None:
                 self.visit(ctx.block())
             else:
