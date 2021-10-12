@@ -123,12 +123,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                 self.visit(ctx.block())
             else:
                 self.visit(ctx.expr())
-            self.stbl.popFrame()
             if not method.has_return:
                 method.body += 'pop %rbp\n'
                 method.body += 'ret\n'
             self.data += method.data
             self.body += method.body
+            self.stbl.popFrame()
 
     def visitExpr(self, ctx):
         if ctx.literal() is not None:
