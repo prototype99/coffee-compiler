@@ -165,12 +165,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
     def visitLocation(self, ctx):
         loc: Var = self.stbl.find(ctx.ID().getText())
-        if loc.scope == Var.GLOBAL:
-            pass
-        elif loc.scope == Var.LOCAL:
-            method_ctx = self.stbl.getMethodContext()
-            method_ctx.body += 'movq ' + str(loc.addr) + '(%rbp), %rax\n'
         if loc is not None:
+            if loc.scope == Var.GLOBAL:
+                pass
+            elif loc.scope == Var.LOCAL:
+                method_ctx = self.stbl.getMethodContext()
+                method_ctx.body += 'movq ' + str(loc.addr) + '(%rbp), %rax\n'
             return loc.data_type
 
 
