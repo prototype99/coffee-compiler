@@ -168,8 +168,8 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         if loc.scope == Var.GLOBAL:
             pass
         elif loc.scope == Var.LOCAL:
-            # TODO: copy variable from var.addr(%rbp) to %rax
-            pass
+            method_ctx = self.stbl.getMethodContext()
+            method_ctx.body += 'movq ' + str(loc.addr) + '(%rbp), %rax\n'
         if loc is not None:
             return loc.data_type
 
