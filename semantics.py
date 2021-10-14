@@ -165,6 +165,11 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
     def visitLocation(self, ctx):
         loc: Var = self.stbl.find(ctx.ID().getText())
+        if loc.scope == Var.GLOBAL:
+            pass
+        elif loc.scope == Var.LOCAL:
+            # TODO: copy variable from var.addr(%rbp) to %rax
+            pass
         if loc is not None:
             return loc.data_type
 
