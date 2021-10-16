@@ -112,12 +112,11 @@ class CoffeeTreeVisitor(CoffeeVisitor):
     def visitMethod_decl(self, ctx):
         line: int = ctx.start.line
         method_id: str = ctx.ID().getText()
-        method_type: str = ctx.return_type().getText()
         method: Method = self.stbl.find(method_id)
         if method is not None:
             print('error on line ' + str(line) + ': method \'' + method_id + '\' already declared on line ' + str(method.line) + '. this declaration will be ignored')
         else:
-            method: Method = Method(method_id, method_type, line)
+            method: Method = Method(method_id, ctx.return_type().getText(), line)
             self.stbl.pushMethod(method)
             self.stbl.pushFrame(method)
             method.body += method.id + ':\n'
