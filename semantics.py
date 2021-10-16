@@ -130,7 +130,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                 param_array: bool = False
                 param: Var = self.stbl.peek(param_id)
                 if param is not None:
-                    print('error on line ' + str(line) + ': param \'' + param_id + '\' already declared on line ' + str(param.line))
+                    print('error on line ' + str(line) + ': param \'' + param_id + '\' already declared on line ' + str(param.line) + '. this duplicate declaration will be ignored')
                 else:
                     method.pushParam(param_type)
                     param: Var = Var(param_id,
