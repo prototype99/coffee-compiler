@@ -13,6 +13,8 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.body: str = '.text\n.global main\n'
 
     def visitBlock(self, ctx):
+        line: int = ctx.start.line
+        # make sure the block is definitely defined
         if ctx.LCURLY() is not None:
             self.stbl.pushScope()
 
@@ -20,6 +22,8 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
         if ctx.LCURLY() is not None:
             self.stbl.popScope()
+        else:
+            print('error on line ' + str(line) + ': expected \'{\'')
 
     def visitExpr(self, ctx):
         if ctx.literal() is not None:
