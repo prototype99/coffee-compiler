@@ -12,21 +12,6 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.data: str = '.data\n'
         self.body: str = '.text\n.global main\n'
 
-    def visitProgram(self, ctx):
-        method = Method('main', 'int', ctx.start.line)
-        self.stbl.pushFrame(method)
-        self.stbl.pushMethod(method)
-        method.body += method.id + ':\n'
-        method.body += 'push %rbp\n'
-        method.body += 'movq %rsp, %rbp\n'
-        self.visitChildren(ctx)
-        if not method.has_return:
-            method.body += 'pop %rbp\n'
-            method.body += 'ret\n'
-        self.data += method.data
-        self.body += method.body
-        self.stbl.popFrame()
-
     def visitBlock(self, ctx):
         if ctx.LCURLY() is not None:
             method_ctx = self.stbl.getMethodContext()
@@ -37,6 +22,31 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
         if ctx.LCURLY() is not None:
             self.stbl.popScope()
+
+    def visitExpr(self, ctx):
+        if ctx.literal() is not None:
+            return self.visit(ctx.literal())
+        elif ctx.location() is not None:
+            return self.visit(ctx.location())
+        elif len(ctx.expr()) == 2:
+            method_ctx = self.stbl.getMethodContext()
+            expr0_type: str = self.visit(ctx.expr(0))
+            method_ctx.body += 'movq %rax, %r10\n'
+            expr1_type: str = self.visit(ctx.expr(1))
+            method_ctx.body += 'movq %rax, %r11\n'
+            if ctx.ADD() is not None:
+                method_ctx.body += 'addq %r10, %r11\n'
+            method_ctx.body += 'movq %r11, %rax\n'
+            if expr0_type == 'float' or expr1_type == 'float':
+                return 'float'
+            if expr0_type == 'int' or expr1_type == 'int':
+                return 'int'
+            if expr0_type == 'bool' or expr1_type == 'bool':
+                return 'bool'
+        elif ctx.data_type() is not None:
+            return ctx.data_type()
+        else:
+            return self.visitChildren(ctx)
 
     def visitGlobal_decl(self, ctx):
         line: int = ctx.start.line
@@ -65,26 +75,29 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                            line)
             self.stbl.pushVar(var)
 
-    def visitVar_decl(self, ctx):
-        line: int = ctx.start.line
-        var_type: str = ctx.data_type().getText()
-        for i in range(len(ctx.var_assign())):
-            var_id: str = ctx.var_assign(i).var().ID().getText()
-            var_size: int = 8
-            var_array: bool = False
+    def visitLiteral(self, ctx):
+        if ctx.bool_lit() is not None:
+            return 'bool'
+        if ctx.INT_LIT() is not None:
+            method_ctx = self.stbl.getMethodContext()
+            method_ctx.body += 'movq $' + ctx.getText() + ', %rax\n'
+            return 'int'
+        if ctx.CHAR_LIT() is not None:
+            return 'char'
+        if ctx.FLOAT_LIT() is not None:
+            return 'float'
+        if ctx.STRING_LIT() is not None:
+            return 'string'
 
-            var: Var = self.stbl.peek(var_id)
-            if var is not None:
-                print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(
-                    var.line) + ' in same scope')
-
-            var: Var = Var(var_id,
-                           var_type,
-                           var_size,
-                           Var.GLOBAL,
-                           var_array,
-                           line)
-            self.stbl.pushVar(var)
+    def visitLocation(self, ctx):
+        loc: Var = self.stbl.find(ctx.ID().getText())
+        if loc is not None:
+            if loc.scope == Var.GLOBAL:
+                pass
+            elif loc.scope == Var.LOCAL:
+                method_ctx = self.stbl.getMethodContext()
+                method_ctx.body += 'movq ' + str(loc.addr) + '(%rbp), %rax\n'
+            return loc.data_type
 
     def visitMethod_decl(self, ctx):
         line: int = ctx.start.line
@@ -129,54 +142,41 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             self.body += method.body
             self.stbl.popFrame()
 
-    def visitExpr(self, ctx):
-        if ctx.literal() is not None:
-            return self.visit(ctx.literal())
-        elif ctx.location() is not None:
-            return self.visit(ctx.location())
-        elif len(ctx.expr()) == 2:
-            method_ctx = self.stbl.getMethodContext()
-            expr0_type: str = self.visit(ctx.expr(0))
-            method_ctx.body += 'movq %rax, %r10\n'
-            expr1_type: str = self.visit(ctx.expr(1))
-            method_ctx.body += 'movq %rax, %r11\n'
-            if ctx.ADD() is not None:
-                method_ctx.body += 'addq %r10, %r11\n'
-            method_ctx.body += 'movq %r11, %rax\n'
-            if expr0_type == 'float' or expr1_type == 'float':
-                return 'float'
-            if expr0_type == 'int' or expr1_type == 'int':
-                return 'int'
-            if expr0_type == 'bool' or expr1_type == 'bool':
-                return 'bool'
-        elif ctx.data_type() is not None:
-            return ctx.data_type()
-        else:
-            return self.visitChildren(ctx)
+    def visitProgram(self, ctx):
+        method = Method('main', 'int', ctx.start.line)
+        self.stbl.pushFrame(method)
+        self.stbl.pushMethod(method)
+        method.body += method.id + ':\n'
+        method.body += 'push %rbp\n'
+        method.body += 'movq %rsp, %rbp\n'
+        self.visitChildren(ctx)
+        if not method.has_return:
+            method.body += 'pop %rbp\n'
+            method.body += 'ret\n'
+        self.data += method.data
+        self.body += method.body
+        self.stbl.popFrame()
 
-    def visitLiteral(self, ctx):
-        if ctx.bool_lit() is not None:
-            return 'bool'
-        if ctx.INT_LIT() is not None:
-            method_ctx = self.stbl.getMethodContext()
-            method_ctx.body += 'movq $' + ctx.getText() + ', %rax\n'
-            return 'int'
-        if ctx.CHAR_LIT() is not None:
-            return 'char'
-        if ctx.FLOAT_LIT() is not None:
-            return 'float'
-        if ctx.STRING_LIT() is not None:
-            return 'string'
+    def visitVar_decl(self, ctx):
+        line: int = ctx.start.line
+        var_type: str = ctx.data_type().getText()
+        for i in range(len(ctx.var_assign())):
+            var_id: str = ctx.var_assign(i).var().ID().getText()
+            var_size: int = 8
+            var_array: bool = False
 
-    def visitLocation(self, ctx):
-        loc: Var = self.stbl.find(ctx.ID().getText())
-        if loc is not None:
-            if loc.scope == Var.GLOBAL:
-                pass
-            elif loc.scope == Var.LOCAL:
-                method_ctx = self.stbl.getMethodContext()
-                method_ctx.body += 'movq ' + str(loc.addr) + '(%rbp), %rax\n'
-            return loc.data_type
+            var: Var = self.stbl.peek(var_id)
+            if var is not None:
+                print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(
+                    var.line) + ' in same scope')
+
+            var: Var = Var(var_id,
+                           var_type,
+                           var_size,
+                           Var.GLOBAL,
+                           var_array,
+                           line)
+            self.stbl.pushVar(var)
 
 
 # load source code
