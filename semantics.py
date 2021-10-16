@@ -99,6 +99,16 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                 method_ctx.body += 'movq ' + str(loc.addr) + '(%rbp), %rax\n'
             return loc.data_type
 
+    def visitMethod_call(self, ctx):
+        method_ctx = self.stbl.getMethodContext()
+
+        for i in range(len(ctx.expr())):
+            self.visit(ctx.expr(i))
+            method_ctx.body += 'movq %rax, %rdi\n'
+        method_ctx.body += 'addq $' + str(self.stbl.getStackPtr()) + ', %rsp\n'
+        method_ctx.body += 'call ' + str(ctx.ID()) + '\n'
+        method_ctx.body += 'subq $' + str(self.stbl.getStackPtr()) + ', %rsp\n'
+
     def visitMethod_decl(self, ctx):
         line: int = ctx.start.line
         method_id: str = ctx.ID().getText()
