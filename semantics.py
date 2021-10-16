@@ -14,8 +14,6 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
     def visitBlock(self, ctx):
         if ctx.LCURLY() is not None:
-            method_ctx = self.stbl.getMethodContext()
-            method_ctx.body += '# method body here\n'
             self.stbl.pushScope()
 
         self.visitChildren(ctx)
