@@ -1,4 +1,3 @@
-# for coursework raise exceptions rather than trying to recover from errors!
 import antlr4 as antlr
 import os
 from CoffeeLexer import CoffeeLexer
