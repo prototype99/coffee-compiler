@@ -14,16 +14,16 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
     def visitBlock(self, ctx):
         line: int = ctx.start.line
-        # make sure the block is definitely defined
+        # check to see if a scope is pushed
         if ctx.LCURLY() is not None:
             self.stbl.pushScope()
-
+        # go through the code
         self.visitChildren(ctx)
-
-        if ctx.LCURLY() is not None:
+        if ctx.RCURLY() is not None:
             self.stbl.popScope()
-        else:
-            print('error on line ' + str(line) + ': expected \'{\'')
+        # braces should be matched
+        elif ctx.LCURLY() is not None:
+            print('error near line ' + str(line) + ': expected \'}\'')
 
     def visitExpr(self, ctx):
         if ctx.literal() is not None:
