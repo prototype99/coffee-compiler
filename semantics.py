@@ -1,3 +1,4 @@
+# this file should be identical for both the semantic analysis and code generation uploads. If there are any notable differences please contact for clarification
 import antlr4 as antlr
 import os
 from CoffeeLexer import CoffeeLexer
@@ -6,6 +7,23 @@ from CoffeeParser import CoffeeParser
 from CoffeeUtil import Var, Method, Import, Loop, SymbolTable
 
 
+# define some static helper functions
+def array_check(ctx, i):
+    return ctx.var_assign(i).var().INT_LIT() is not None
+
+
+def var_size(isarray, ctx, i, line, var_id):
+    if isarray:
+        size: int = ctx.var_assign(i).var().INT_LIT().getText() * 8
+        # catch rule 14
+        if int(size) == 0:
+            print('error on line ' + str(line) + ': array \'' + var_id + '\' has an illegal zero length')
+        return size
+    else:
+        return 8
+
+
+# define main visitor class
 class CoffeeTreeVisitor(CoffeeVisitor):
     def __init__(self):
         self.stbl: SymbolTable = SymbolTable()
@@ -54,22 +72,13 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         line: int = ctx.start.line
         for i in range(len(ctx.var_decl().var_assign())):
             var_id: str = ctx.var_decl().var_assign(i).var().ID().getText()
-            # handle arrays
-            if ctx.var_decl().var_assign(i).var().INT_LIT() is not None:
-                var_size: int = ctx.var_decl().var_assign(i).var().INT_LIT().getText() * 8
-                # catch rule 14
-                if int(var_size) == 0:
-                    print('error on line ' + str(line) + ': global var array \'' + var_id + '\' has an illegal zero length')
-                var_array: bool = True
-            else:
-                var_size: int = 8
-                var_array: bool = False
+            var_array: bool = array_check(ctx.var_decl(), i)
             var: Var = self.stbl.find(var_id)
             if var is not None:
                 print('error on line ' + str(line) + ': global var \'' + var_id + '\' already declared on line ' + str(var.line))
             var: Var = Var(var_id,
                            ctx.var_decl().data_type().getText(),
-                           var_size,
+                           var_size(var_array, ctx.var_decl(), i, line, var_id),
                            Var.GLOBAL,
                            var_array,
                            line)
@@ -174,23 +183,14 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         line: int = ctx.start.line
         for i in range(len(ctx.var_assign())):
             var_id: str = ctx.var_assign(i).var().ID().getText()
-            # handle arrays
-            if ctx.var_assign(i).var().INT_LIT() is not None:
-                var_size: int = ctx.var_assign(i).var().INT_LIT().getText() * 8
-                # catch rule 14
-                if int(var_size) == 0:
-                    print('error on line ' + str(line) + ': global var array \'' + var_id + '\' has an illegal zero length')
-                var_array: bool = True
-            else:
-                var_size: int = 8
-                var_array: bool = False
+            var_array: bool = array_check(ctx, i)
             var: Var = self.stbl.peek(var_id)
             if var is not None:
                 print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(
                     var.line) + ' in same scope')
             var: Var = Var(var_id,
                            ctx.data_type().getText(),
-                           var_size,
+                           var_size(var_array, ctx, i, line, var_id),
                            Var.GLOBAL,
                            var_array,
                            line)
