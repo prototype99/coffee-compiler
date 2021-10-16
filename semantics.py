@@ -174,8 +174,16 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         line: int = ctx.start.line
         for i in range(len(ctx.var_assign())):
             var_id: str = ctx.var_assign(i).var().ID().getText()
-            var_size: int = 8
-            var_array: bool = False
+            # handle arrays
+            if ctx.var_decl().var_assign(i).var().INT_LIT() is not None:
+                var_size: int = ctx.var_decl().var_assign(i).var().INT_LIT().getText() * 8
+                # catch rule 14
+                if int(var_size) == 0:
+                    print('error on line ' + str(line) + ': global var array \'' + var_id + '\' has an illegal zero length')
+                var_array: bool = True
+            else:
+                var_size: int = 8
+                var_array: bool = False
             var: Var = self.stbl.peek(var_id)
             if var is not None:
                 print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(
