@@ -150,9 +150,13 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             self.body += method.body
             self.stbl.popFrame()
 
+    # starting point
     def visitProgram(self, ctx):
+        # main method should push an int
         method = Method('main', 'int', ctx.start.line)
+        # create new stack frame
         self.stbl.pushFrame(method)
+        # push the method to the symbol table
         self.stbl.pushMethod(method)
         method.body += method.id + ':\n'
         method.body += 'push %rbp\n'
@@ -187,8 +191,9 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             self.stbl.pushVar(var)
 
 
-# load source code
+# load base test file
 filein = open('./test.coffee', 'r')
+# read whatever file was enabled
 source_code = filein.read()
 filein.close()
 
@@ -206,14 +211,14 @@ visitor = CoffeeTreeVisitor()
 # visit nodes from tree root
 visitor.visit(tree)
 
-# assembly output code
+# print assembly output code
 code = visitor.data + visitor.body
 print(code)
 
-# save the assembly file
+# save the assembly file to a.s
 fileout = open('a.s', 'w')
 fileout.write(code)
 fileout.close()
 
-# assemble and link
+# assemble and link via gcc
 os.system("gcc a.s -lm ; ./a.out ; echo $?")
