@@ -138,7 +138,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         elif len(ctx.expr()) == 2:
             method_ctx = self.stbl.getMethodContext()
             expr0_type: str = self.visit(ctx.expr(0))
+            method_ctx.body += 'movq %rax, %r10\n'
             expr1_type: str = self.visit(ctx.expr(1))
+            method_ctx.body += 'movq %rax, %r11\n'
+            if ctx.ADD() is not None:
+                method_ctx.body += 'addq %r10, %r11\n'
+            method_ctx.body += 'movq %r11, %rax\n'
             if expr0_type == 'float' or expr1_type == 'float':
                 return 'float'
             if expr0_type == 'int' or expr1_type == 'int':
