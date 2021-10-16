@@ -136,6 +136,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         elif ctx.location() is not None:
             return self.visit(ctx.location())
         elif len(ctx.expr()) == 2:
+            method_ctx = self.stbl.getMethodContext()
             expr0_type: str = self.visit(ctx.expr(0))
             expr1_type: str = self.visit(ctx.expr(1))
             if expr0_type == 'float' or expr1_type == 'float':
