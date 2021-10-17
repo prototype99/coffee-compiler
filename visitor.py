@@ -133,6 +133,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             method: Method = Method(method_id, ctx.return_type().getText(), line)
             self.stbl.pushMethod(method)
             self.stbl.pushFrame(method)
+            # produce the basic method code
             method.body += method.id + ':\n'
             method.body += 'push %rbp\n'
             method.body += 'movq %rsp, %rbp\n'
