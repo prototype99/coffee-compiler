@@ -64,7 +64,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                 return 'float'
             if expr0_type == 'int' or expr1_type == 'int':
                 return 'int'
-            if expr0_type == 'bool' or expr1_type == 'bool':
+            else:
                 return 'bool'
         elif ctx.data_type() is not None:
             return ctx.data_type()
