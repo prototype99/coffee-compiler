@@ -1,4 +1,6 @@
-# this file should be identical for both the semantic analysis and code generation uploads. If there are any notable differences please contact for clarification
+# this file should be identical for both the semantic analysis and code generation uploads. If there are any notable differences please contact for
+# clarification
+# TODO: add more shared message/duplicate check functions
 import antlr4 as antlr
 import os
 from CoffeeLexer import CoffeeLexer
@@ -57,6 +59,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             if ctx.ADD() is not None:
                 method_ctx.body += 'addq %r10, %r11\n'
             method_ctx.body += 'movq %r11, %rax\n'
+            # return the highest precedence type, if this is wrong I'll cry
             if expr0_type == 'float' or expr1_type == 'float':
                 return 'float'
             if expr0_type == 'int' or expr1_type == 'int':
@@ -74,6 +77,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             var_id: str = ctx.var_decl().var_assign(i).var().ID().getText()
             var_array: bool = array_check(ctx.var_decl(), i)
             var: Var = self.stbl.find(var_id)
+            # rule 2
             if var is not None:
                 print('error on line ' + str(line) + ': global var \'' + var_id + '\' already declared on line ' + str(var.line))
             var: Var = Var(var_id,
@@ -122,6 +126,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         line: int = ctx.start.line
         method_id: str = ctx.ID().getText()
         method: Method = self.stbl.find(method_id)
+        # rule 3
         if method is not None:
             print('error on line ' + str(line) + ': method \'' + method_id + '\' already declared on line ' + str(method.line) + '. this declaration will be ignored')
         else:
@@ -137,6 +142,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                 param_size: int = 8
                 param_array: bool = False
                 param: Var = self.stbl.peek(param_id)
+                # rule 2
                 if param is not None:
                     print('error on line ' + str(line) + ': param \'' + param_id + '\' already declared on line ' + str(param.line) + '. this declaration will be ignored')
                 else:
@@ -185,6 +191,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             var_id: str = ctx.var_assign(i).var().ID().getText()
             var_array: bool = array_check(ctx, i)
             var: Var = self.stbl.peek(var_id)
+            # rule 2
             if var is not None:
                 print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(
                     var.line) + ' in same scope')
