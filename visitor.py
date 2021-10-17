@@ -8,6 +8,8 @@ from CoffeeVisitor import CoffeeVisitor
 from CoffeeParser import CoffeeParser
 from CoffeeUtil import Var, Method, Import, Loop, SymbolTable
 
+result = '%rax'
+
 
 # define some static helper functions
 def array_check(ctx, i):
@@ -53,12 +55,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         elif len(ctx.expr()) == 2:
             method_ctx = self.stbl.getMethodContext()
             expr0_type: str = self.visit(ctx.expr(0))
-            method_ctx.body += 'movq %rax, %r10\n'
+            method_ctx.body += 'movq ' + result + ', %r10\n'
             expr1_type: str = self.visit(ctx.expr(1))
-            method_ctx.body += 'movq %rax, %r11\n'
+            method_ctx.body += 'movq ' + result + ', %r11\n'
             if ctx.ADD() is not None:
                 method_ctx.body += 'addq %r10, %r11\n'
-            method_ctx.body += 'movq %r11, %rax\n'
+            method_ctx.body += 'movq %r11, ' + result + '\n'
             # return the highest precedence type, if this is wrong I'll cry
             if expr0_type == 'float' or expr1_type == 'float':
                 return 'float'
@@ -93,7 +95,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             return 'bool'
         if ctx.INT_LIT() is not None:
             method_ctx = self.stbl.getMethodContext()
-            method_ctx.body += 'movq $' + ctx.getText() + ', %rax\n'
+            method_ctx.body += 'movq $' + ctx.getText() + ', ' + result + '\n'
             return 'int'
         if ctx.CHAR_LIT() is not None:
             return 'char'
@@ -109,7 +111,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                 pass
             elif loc.scope == Var.LOCAL:
                 method_ctx = self.stbl.getMethodContext()
-                method_ctx.body += 'movq ' + str(loc.addr) + '(%rbp), %rax\n'
+                method_ctx.body += 'movq ' + str(loc.addr) + '(%rbp), ' + result + '\n'
             return loc.data_type
 
     def visitMethod_call(self, ctx):
@@ -117,7 +119,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
         for i in range(len(ctx.expr())):
             self.visit(ctx.expr(i))
-            method_ctx.body += 'movq %rax, %rdi\n'
+            method_ctx.body += 'movq ' + result + ', %rdi\n'
         method_ctx.body += 'addq $' + str(self.stbl.getStackPtr()) + ', %rsp\n'
         method_ctx.body += 'call ' + str(ctx.ID()) + '\n'
         method_ctx.body += 'subq $' + str(self.stbl.getStackPtr()) + ', %rsp\n'
