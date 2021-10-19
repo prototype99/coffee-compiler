@@ -90,6 +90,15 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                            line)
             self.stbl.pushVar(var)
 
+    def visitImport_stmt(self, ctx):
+        # ya need a loop!
+        # TODO: gather details (method id, line, etc)
+        # TODO: check symbol table for duplicates
+        import_symbol = Import(id=import_id,
+                           return_type='int',
+                           line)
+        # TODO: add to symbol table
+
     def visitLiteral(self, ctx):
         if ctx.bool_lit() is not None:
             return 'bool'
