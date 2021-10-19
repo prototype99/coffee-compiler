@@ -82,6 +82,9 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             # rule 2
             if var is not None:
                 print('error on line ' + str(line) + ': global var \'' + var_id + '\' already declared on line ' + str(var.line))
+            if ctx.var_decl().var_assign(i).expr() is not None:
+                # visit the expression
+                self.visit(ctx.var_decl().var_assign(i).expr())
             var: Var = Var(var_id,
                            ctx.var_decl().data_type().getText(),
                            var_size(var_array, ctx.var_decl(), i, line, var_id),
