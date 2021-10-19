@@ -201,7 +201,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             var: Var = Var(var_id,
                            ctx.data_type().getText(),
                            var_size(var_array, ctx, i, line, var_id),
-                           Var.GLOBAL,
+                           Var.LOCAL,
                            var_array,
                            line)
             self.stbl.pushVar(var)
