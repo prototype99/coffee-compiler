@@ -222,7 +222,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
 
 # load base test file
-#bfilein = open('./test.coffee', 'r')
+# filein = open('./test.coffee', 'r')
 filein = open('./1a.coffee', 'r')
 # read whatever file was enabled
 source_code = filein.read()
