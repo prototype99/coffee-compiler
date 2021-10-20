@@ -99,10 +99,10 @@ class CoffeeTreeVisitor(CoffeeVisitor):
     def visitImport_stmt(self, ctx):
         line: int = ctx.start.line
         for i in range(len(ctx.ID())):
-            # in this context the id is an imported method
             # TODO: check symbol table for duplicates
+            # in this context the id is an imported method
             import_symbol = Import(ctx.ID(i), 'int', line)
-        # TODO: add to symbol table
+            self.stbl.pushMethod(import_symbol)
 
     def visitLiteral(self, ctx):
         if ctx.bool_lit() is not None:
