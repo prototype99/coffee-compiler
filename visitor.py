@@ -97,13 +97,14 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             self.stbl.pushVar(var)
 
     def visitImport_stmt(self, ctx):
+        # do not give into the temptation of the sline, it is a false idol
         line: int = ctx.start.line
         for i in range(len(ctx.ID())):
-            # in this context the id is an imported method
-            import_id = ctx.ID(i)
+            # in this context the id is an imported method. there is no getter so you must convert it to a string or experience hell
+            import_id = str(ctx.ID(i))
             import_symbol = self.stbl.find(import_id)
             if import_symbol is not None:
-                print('error on line ' + str(line) + ': symbol \'' + import_id + '\' already imported on line ' + str(import_id.line))
+                print('error on line ' + str(line) + ': symbol \'' + import_id + '\' already imported on line ' + str(import_symbol.line))
             import_symbol = Import(import_id, 'int', line)
             self.stbl.pushMethod(import_symbol)
 
