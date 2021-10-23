@@ -7,7 +7,8 @@ import os
 from CoffeeLexer import CoffeeLexer
 from CoffeeVisitor import CoffeeVisitor
 from CoffeeParser import CoffeeParser
-from CoffeeUtil import Var, Method, Import, Loop, SymbolTable
+# remember to add Loop for loops
+from CoffeeUtil import Var, Method, Import, SymbolTable
 
 result = '%rax'
 
