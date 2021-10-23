@@ -240,7 +240,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
 # load base test file
 # filein = open('./test.coffee', 'r')
-filein = open('./1a.coffee', 'r')
+filein = open('1a-original.coffee', 'r')
 # read whatever file was enabled
 source_code = filein.read()
 filein.close()
