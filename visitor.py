@@ -146,7 +146,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             method_ctx.body += 'subq $' + str(self.stbl.getStackPtr()) + ', %rsp\n'
         else:
             line: int = ctx.start.line
-            print('error on line ' + str(line) + ': method \'' + str(ctx.ID()) + '\' does not exist')
+            print('error on line ' + str(line) + ': method \'' + str(ctx.ID()) + '\' does not exist, method call dropped')
 
     def visitMethod_decl(self, ctx):
         line: int = ctx.start.line
