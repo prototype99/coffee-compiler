@@ -103,6 +103,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             # in this context the id is an imported method. there is no getter so you must convert it to a string or experience hell
             import_id = str(ctx.ID(i))
             import_symbol = self.stbl.find(import_id)
+            # rule 3
             if import_symbol is not None:
                 print('error on line ' + str(line) + ': symbol \'' + import_id + '\' already imported on line ' + str(import_symbol.line))
             import_symbol = Import(import_id, 'int', line)
