@@ -216,7 +216,8 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         method_ctx: Method = self.stbl.getMethodContext()
         # rule 6
         if ctx.expr() and method_ctx.return_type == 'void':
-            print("im tryna shower in ere get ya yeeyee ass outta here")
+            line: int = ctx.start.line
+            print('error on line ' + str(line) + ': return type specified for void method \'' + method_ctx.id + '\' declared on line ' + str(method_ctx.line))
 
     def visitVar_decl(self, ctx):
         line: int = ctx.start.line
