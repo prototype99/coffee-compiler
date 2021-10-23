@@ -135,7 +135,6 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
     def visitMethod_call(self, ctx):
         method_ctx = self.stbl.getMethodContext()
-
         for i in range(len(ctx.expr())):
             self.visit(ctx.expr(i))
             method_ctx.body += 'movq ' + result + ', %rdi\n'
