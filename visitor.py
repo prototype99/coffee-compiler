@@ -1,5 +1,6 @@
 # this file should be identical for both the semantic analysis and code generation uploads. If there are any notable differences please contact for
 # clarification
+# completed semantic analysis tasks: 1
 # TODO: add more shared message/duplicate check functions
 import antlr4 as antlr
 import os
