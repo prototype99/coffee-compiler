@@ -35,8 +35,8 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.data: str = '.data\n'
         self.body: str = '.text\n.global main\n'
 
-    def visitAssign(self, ctx):
-        pass
+    # def visitAssign(self, ctx):
+    #     pass
 
     def visitBlock(self, ctx):
         line: int = ctx.start.line
