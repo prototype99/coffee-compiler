@@ -212,6 +212,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.body += method.body
         self.stbl.popFrame()
 
+    def visitReturn(self, ctx):
+        method_ctx: Method = self.stbl.getMethodContext()
+        # rule 6
+        if ctx.expr() is not None and method_ctx.return_type == 'void':
+            print("im tryna shower in ere get ya yeeyee ass outta here")
+
     def visitVar_decl(self, ctx):
         line: int = ctx.start.line
         for i in range(len(ctx.var_assign())):
