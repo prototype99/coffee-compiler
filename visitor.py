@@ -14,7 +14,7 @@ result = '%rax'
 
 # define some static helper functions
 def array_check(ctx, i):
-    return ctx.var_assign(i).var().INT_LIT() is not None
+    return ctx.var_assign(i).var().INT_LIT()
 
 
 def var_size(isarray, ctx, i, line, var_id):
@@ -41,20 +41,20 @@ class CoffeeTreeVisitor(CoffeeVisitor):
     def visitBlock(self, ctx):
         line: int = ctx.start.line
         # check to see if a scope is pushed
-        if ctx.LCURLY() is not None:
+        if ctx.LCURLY():
             self.stbl.pushScope()
         # go through the code
         self.visitChildren(ctx)
-        if ctx.RCURLY() is not None:
+        if ctx.RCURLY():
             self.stbl.popScope()
         # braces should be matched
-        elif ctx.LCURLY() is not None:
+        elif ctx.LCURLY():
             print('error near line ' + str(line) + ': expected \'}\'')
 
     def visitExpr(self, ctx):
-        if ctx.literal() is not None:
+        if ctx.literal():
             return self.visit(ctx.literal())
-        elif ctx.location() is not None:
+        elif ctx.location():
             return self.visit(ctx.location())
         elif len(ctx.expr()) == 2:
             method_ctx = self.stbl.getMethodContext()
@@ -62,7 +62,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             method_ctx.body += 'movq ' + result + ', %r10\n'
             expr1_type: str = self.visit(ctx.expr(1))
             method_ctx.body += 'movq ' + result + ', %r11\n'
-            if ctx.ADD() is not None:
+            if ctx.ADD():
                 method_ctx.body += 'addq %r10, %r11\n'
             method_ctx.body += 'movq %r11, ' + result + '\n'
             # return the highest precedence type, if this is wrong I'll cry
@@ -72,7 +72,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                 return 'int'
             else:
                 return 'bool'
-        elif ctx.data_type() is not None:
+        elif ctx.data_type():
             return ctx.data_type()
         else:
             return self.visitChildren(ctx)
@@ -84,9 +84,9 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             var_array: bool = array_check(ctx.var_decl(), i)
             var: Var = self.stbl.find(var_id)
             # rule 2
-            if var is not None:
+            if var:
                 print('error on line ' + str(line) + ': global var \'' + var_id + '\' already declared on line ' + str(var.line))
-            if ctx.var_decl().var_assign(i).expr() is not None:
+            if ctx.var_decl().var_assign(i).expr():
                 # visit the expression
                 self.visit(ctx.var_decl().var_assign(i).expr())
             var: Var = Var(var_id,
@@ -105,28 +105,28 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             import_id = str(ctx.ID(i))
             import_symbol = self.stbl.find(import_id)
             # rule 3
-            if import_symbol is not None:
+            if import_symbol:
                 print('error on line ' + str(line) + ': symbol \'' + import_id + '\' already imported on line ' + str(import_symbol.line))
             import_symbol = Import(import_id, 'int', line)
             self.stbl.pushMethod(import_symbol)
 
     def visitLiteral(self, ctx):
-        if ctx.bool_lit() is not None:
+        if ctx.bool_lit():
             return 'bool'
-        if ctx.INT_LIT() is not None:
+        if ctx.INT_LIT():
             method_ctx = self.stbl.getMethodContext()
             method_ctx.body += 'movq $' + ctx.getText() + ', ' + result + '\n'
             return 'int'
-        if ctx.CHAR_LIT() is not None:
+        if ctx.CHAR_LIT():
             return 'char'
-        if ctx.FLOAT_LIT() is not None:
+        if ctx.FLOAT_LIT():
             return 'float'
-        if ctx.STRING_LIT() is not None:
+        if ctx.STRING_LIT():
             return 'string'
 
     def visitLocation(self, ctx):
         loc: Var = self.stbl.find(ctx.ID().getText())
-        if loc is not None:
+        if loc:
             if loc.scope == Var.GLOBAL:
                 pass
             elif loc.scope == Var.LOCAL:
@@ -153,7 +153,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         method_id: str = ctx.ID().getText()
         method: Method = self.stbl.find(method_id)
         # rule 3
-        if method is not None:
+        if method:
             print('error on line ' + str(line) + ': method \'' + method_id + '\' already declared on line ' + str(method.line) + '. this declaration will be ignored')
         else:
             method: Method = Method(method_id, ctx.return_type().getText(), line)
@@ -170,7 +170,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                 param_array: bool = False
                 param: Var = self.stbl.peek(param_id)
                 # rule 2
-                if param is not None:
+                if param:
                     print('error on line ' + str(line) + ': param \'' + param_id + '\' already declared on line ' + str(param.line) + '. this declaration will be ignored')
                 else:
                     method.pushParam(param_type)
@@ -182,7 +182,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                                      line)
                     self.stbl.pushVar(param)
                     method.body += 'movq ' + self.stbl.param_reg[i] + ', ' + str(param.addr) + '(%rbp)\n'
-            if ctx.block() is not None:
+            if ctx.block():
                 self.visit(ctx.block())
             else:
                 self.visit(ctx.expr())
@@ -215,7 +215,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
     def visitReturn(self, ctx):
         method_ctx: Method = self.stbl.getMethodContext()
         # rule 6
-        if ctx.expr() is not None and method_ctx.return_type == 'void':
+        if ctx.expr() and method_ctx.return_type == 'void':
             print("im tryna shower in ere get ya yeeyee ass outta here")
 
     def visitVar_decl(self, ctx):
@@ -225,7 +225,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             var_array: bool = array_check(ctx, i)
             var: Var = self.stbl.peek(var_id)
             # rule 2
-            if var is not None:
+            if var:
                 print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(
                     var.line) + ' in same scope')
             var: Var = Var(var_id,
