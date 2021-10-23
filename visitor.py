@@ -134,13 +134,18 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             return loc.data_type
 
     def visitMethod_call(self, ctx):
-        method_ctx = self.stbl.getMethodContext()
-        for i in range(len(ctx.expr())):
-            self.visit(ctx.expr(i))
-            method_ctx.body += 'movq ' + result + ', %rdi\n'
-        method_ctx.body += 'addq $' + str(self.stbl.getStackPtr()) + ', %rsp\n'
-        method_ctx.body += 'call ' + str(ctx.ID()) + '\n'
-        method_ctx.body += 'subq $' + str(self.stbl.getStackPtr()) + ', %rsp\n'
+        # rule 4
+        if self.stbl.find(str(ctx.ID())):
+            method_ctx = self.stbl.getMethodContext()
+            for i in range(len(ctx.expr())):
+                self.visit(ctx.expr(i))
+                method_ctx.body += 'movq ' + result + ', %rdi\n'
+            method_ctx.body += 'addq $' + str(self.stbl.getStackPtr()) + ', %rsp\n'
+            method_ctx.body += 'call ' + str(ctx.ID()) + '\n'
+            method_ctx.body += 'subq $' + str(self.stbl.getStackPtr()) + ', %rsp\n'
+        else:
+            line: int = ctx.start.line
+            print('error on line ' + str(line) + ': method \'' + str(ctx.ID()) + '\' does not exist')
 
     def visitMethod_decl(self, ctx):
         line: int = ctx.start.line
