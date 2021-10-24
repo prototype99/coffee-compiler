@@ -220,9 +220,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
     def visitReturn(self, ctx):
         method_ctx: Method = self.stbl.getMethodContext()
+        line: int = ctx.start.line
+        # rule 8
+        if method_ctx.id == 'main' and not ctx.expr().literal().INT_LIT():
+            print('error on line ' + str(line) + ': main method may only return an integer value')
         # rule 6
         if ctx.expr() and method_ctx.return_type == 'void':
-            line: int = ctx.start.line
             print('error on line ' + str(line) + ': return type specified for void method \'' + method_ctx.id + '\' declared on line ' + str(method_ctx.line))
 
     def visitVar_decl(self, ctx):
