@@ -55,6 +55,9 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             print('error near line ' + str(line) + ': expected \'}\'')
 
     def visitExpr(self, ctx):
+        # the language spec never actually says that ints can be true or false
+        if ctx.NOT() and len(ctx.expr()) == 1 and ctx.expr(0).literal().INT_LIT():
+            print('error on line ' + str(ctx.start.line) + ': cannot apply boolean action to integer value')
         if ctx.literal():
             return self.visit(ctx.literal())
         elif ctx.location():
