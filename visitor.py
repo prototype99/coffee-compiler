@@ -52,7 +52,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             self.stbl.popScope()
         # braces should be matched
         elif ctx.LCURLY():
-            print('error near line ' + str(line) + ': expected \'}\'')
+            print('error on line ' + str(line) + ': expected \'}\', got \'{\'')
 
     def visitExpr(self, ctx):
         # the language spec never actually says that ints can be true or false
