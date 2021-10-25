@@ -33,6 +33,14 @@ def var_size(isarray, ctx, i, line, var_id):
         return 8
 
 
+# method with extended semantic analysis capabilities
+class Method(Method):
+    def __init__(self, id: str, return_type: str, line: int):
+        super().__init__(id, return_type, line)
+        # used for if statement semantic analysis
+        self.blocks: int = 0
+
+
 # define main visitor class
 class CoffeeTreeVisitor(CoffeeVisitor):
     def __init__(self):
