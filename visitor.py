@@ -42,6 +42,23 @@ class Method(Method):
         # list of if statement evaluation results
         self.if_returns = []
 
+    def check_if(self, ctx):
+        # evaluate whether or not if statement equates to a method return
+        # TODO: actually like... evaluate whether returns are going on, or whatever, idk, we live in a society
+        if ctx.ELSE():
+            # for i in range(len(ctx.block())):
+            #     print(ctx.block(i).getText())
+            self.if_returns.append(True)
+        else:
+            self.if_returns.append(False)
+        # rule 9
+        if len(self.if_returns) == self.blocks:
+            if True in self.if_returns:
+                print("twoo")
+                self.has_return = True
+            else:
+                print('warning on line ' + str(self.line) + ': method \'' + self.id + '\' method does not always return a value')
+
 
 # define main visitor class
 class CoffeeTreeVisitor(CoffeeVisitor):
@@ -117,14 +134,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
     def visitIf(self, ctx):
         method_ctx = self.stbl.getMethodContext()
-        # evaluate whether or not if statement equates to a method return
-        # TODO: actually like... evaluate whether returns are going on, or whatever, idk, we live in a society
-        if ctx.ELSE():
-            # for i in range(len(ctx.block())):
-            #     print(ctx.block(i).getText())
-            method_ctx.if_returns.append(True)
-        else:
-            method_ctx.if_returns.append(False)
+        method_ctx.check_if(ctx)
 
     def visitImport_stmt(self, ctx):
         # do not give into the temptation of the sline, it is a false idol
