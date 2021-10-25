@@ -115,6 +115,17 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                            line)
             self.stbl.pushVar(var)
 
+    def visitIf(self, ctx):
+        method_ctx = self.stbl.getMethodContext()
+        # evaluate whether or not if statement equates to a method return
+        # TODO: actually like... evaluate whether returns are going on, or whatever, idk, we live in a society
+        if ctx.ELSE():
+            # for i in range(len(ctx.block())):
+            #     print(ctx.block(i).getText())
+            method_ctx.if_returns.append(True)
+        else:
+            method_ctx.if_returns.append(False)
+
     def visitImport_stmt(self, ctx):
         # do not give into the temptation of the sline, it is a false idol
         line: int = ctx.start.line
