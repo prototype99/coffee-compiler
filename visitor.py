@@ -247,7 +247,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         for i in range(len(ctx.block())):
             # check if it is an if and thus should be counted
             # TODO: find ALL if statements
-            if ctx.block(i).statement().IF():
+            if isinstance(ctx.block(i).statement(), CoffeeParser.IfContext):
                 method.blocks = method.blocks + 1
         # create new stack frame
         self.stbl.pushFrame(method)
