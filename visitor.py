@@ -13,6 +13,7 @@ from CoffeeParser import CoffeeParser
 # remember to add Loop for loops
 from CoffeeUtil import Var, Method, Import, SymbolTable
 
+# constant used to improve readability
 result = '%rax'
 
 
