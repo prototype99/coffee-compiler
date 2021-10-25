@@ -245,7 +245,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         method = Method('main', 'int', ctx.start.line)
         # record number of blocks inside method
         for i in range(len(ctx.block())):
-            # check if it is an if and thus should be counted
+            # check if it is an if and thus should be counted, you must use isinstance so it doesn't freak out
             # TODO: find ALL if statements
             if isinstance(ctx.block(i).statement(), CoffeeParser.IfContext):
                 method.blocks = method.blocks + 1
