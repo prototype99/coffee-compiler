@@ -213,6 +213,9 @@ class CoffeeTreeVisitor(CoffeeVisitor):
     def visitProgram(self, ctx):
         # main method should push an int
         method = Method('main', 'int', ctx.start.line)
+        # record number of blocks inside method
+        for i in range(len(ctx.block())):
+            method.blocks = method.blocks + 1
         # create new stack frame
         self.stbl.pushFrame(method)
         # push the method to the symbol table
