@@ -136,6 +136,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         method_ctx = self.stbl.getMethodContext()
         method_ctx.check_if(ctx)
         self.visitChildren(ctx)
+        # rule 11
+        if ctx.expr().AND():
+            for i in range(len(ctx.expr().expr())):
+                if ctx.expr().expr(i).NOT() and len(ctx.expr().expr(i).expr()) == 1 and ctx.expr().expr(i).expr(0).literal().INT_LIT():
+                    line: int = ctx.start.line
+                    print('error on line ' + str(line) + ': expression \'' + ctx.expr().expr(i).getText() + '\' is non-boolean, this comparison is invalid')
 
     def visitImport_stmt(self, ctx):
         # do not give into the temptation of the sline, it is a false idol
