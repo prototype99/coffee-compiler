@@ -39,6 +39,8 @@ class Method(Method):
         super().__init__(id, return_type, line)
         # used for if statement semantic analysis
         self.blocks: int = 0
+        # list of if statement evaluation results
+        self.if_returns = []
 
 
 # define main visitor class
