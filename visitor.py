@@ -215,7 +215,10 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         method = Method('main', 'int', ctx.start.line)
         # record number of blocks inside method
         for i in range(len(ctx.block())):
-            method.blocks = method.blocks + 1
+            # check if it is an if and thus should be counted
+            # TODO: find ALL if statements
+            if ctx.block(i).statement().IF():
+                method.blocks = method.blocks + 1
         # create new stack frame
         self.stbl.pushFrame(method)
         # push the method to the symbol table
