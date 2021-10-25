@@ -135,6 +135,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
     def visitIf(self, ctx):
         method_ctx = self.stbl.getMethodContext()
         method_ctx.check_if(ctx)
+        self.visitChildren(ctx)
 
     def visitImport_stmt(self, ctx):
         # do not give into the temptation of the sline, it is a false idol
