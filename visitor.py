@@ -1,7 +1,7 @@
 # this file should be identical for both the semantic analysis and code generation uploads. If there are any notable differences please contact for
 # clarification
 # I definitely need to work on dealing with nesting
-# completed semantic analysis tasks: 1
+# completed semantic analysis tasks: 1, 2
 # TODO: add code for rules : 5, 7, 26
 
 # TODO: add more shared message/duplicate check functions
