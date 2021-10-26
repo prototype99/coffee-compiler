@@ -54,7 +54,6 @@ class Method(Method):
         # rule 9
         if len(self.if_returns) == self.blocks:
             if True in self.if_returns:
-                print("twoo")
                 self.has_return = True
             else:
                 print('warning on line ' + str(self.line) + ': method \'' + self.id + '\' method does not always return a value')
