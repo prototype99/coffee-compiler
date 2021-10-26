@@ -273,6 +273,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         # rule 6
         if ctx.expr() and method_ctx.return_type == 'void':
             print('error on line ' + str(line) + ': return type specified for void method \'' + method_ctx.id + '\' declared on line ' + str(method_ctx.line))
+        self.visitChildren(ctx)
 
     def visitVar_decl(self, ctx):
         line: int = ctx.start.line
