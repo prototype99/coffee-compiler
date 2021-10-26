@@ -235,6 +235,8 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                     else:
                         # this whole pointer + param_size thing would allow for arrays, I don't think we're expected to do arrays, but whatever
                         method.body += indent + 'movq ' + str(pointer + param_size) + '(%rsp), ' + result + '\n'
+                        # you can't move pointer to pointer directly
+                        method.body += indent + 'movq ' + result + ', ' + str(param.addr) + '(%rbp)\n'
             if ctx.block():
                 self.visit(ctx.block())
             else:
