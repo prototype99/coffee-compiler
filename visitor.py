@@ -228,7 +228,13 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                                      param_array,
                                      line)
                     self.stbl.pushVar(param)
-                    method.body += indent + 'movq ' + self.stbl.param_reg[i] + ', ' + str(param.addr) + '(%rbp)\n'
+                    pointer = 8
+                    # only up to 6 values can fit into registers
+                    if i < 6:
+                        method.body += indent + 'movq ' + self.stbl.param_reg[i] + ', ' + str(param.addr) + '(%rbp)\n'
+                    else:
+                        # this whole pointer + param_size thing would allow for arrays, I don't think we're expected to do arrays, but whatever
+                        method.body += indent + 'movq ' + str(pointer + param_size) + '(%rsp), ' + result + '\n'
             if ctx.block():
                 self.visit(ctx.block())
             else:
