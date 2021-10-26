@@ -13,7 +13,9 @@ from CoffeeParser import CoffeeParser
 # remember to add Loop for loops
 from CoffeeUtil import Var, Method, Import, SymbolTable
 
-# constant used to improve codegen readability
+# constants used to improve codegen readability
+# we add indents to make diffs smoother
+indent = '  '
 result = '%rax'
 
 
@@ -93,12 +95,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         elif len(ctx.expr()) == 2:
             method_ctx = self.stbl.getMethodContext()
             expr0_type: str = self.visit(ctx.expr(0))
-            method_ctx.body += 'movq ' + result + ', %r10\n'
+            method_ctx.body += indent + 'movq ' + result + ', %r10\n'
             expr1_type: str = self.visit(ctx.expr(1))
-            method_ctx.body += 'movq ' + result + ', %r11\n'
+            method_ctx.body += indent + 'movq ' + result + ', %r11\n'
             if ctx.ADD():
-                method_ctx.body += 'addq %r10, %r11\n'
-            method_ctx.body += 'movq %r11, ' + result + '\n'
+                method_ctx.body += indent + 'addq %r10, %r11\n'
+            method_ctx.body += indent + 'movq %r11, ' + result + '\n'
             # return the highest precedence type, if this is wrong I'll cry
             if expr0_type == 'float' or expr1_type == 'float':
                 return 'float'
@@ -160,7 +162,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             return 'bool'
         if ctx.INT_LIT():
             method_ctx = self.stbl.getMethodContext()
-            method_ctx.body += 'movq $' + ctx.getText() + ', ' + result + '\n'
+            method_ctx.body += indent + 'movq $' + ctx.getText() + ', ' + result + '\n'
             return 'int'
         if ctx.CHAR_LIT():
             return 'char'
@@ -176,7 +178,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                 pass
             elif loc.scope == Var.LOCAL:
                 method_ctx = self.stbl.getMethodContext()
-                method_ctx.body += 'movq ' + str(loc.addr) + '(%rbp), ' + result + '\n'
+                method_ctx.body += indent + 'movq ' + str(loc.addr) + '(%rbp), ' + result + '\n'
             return loc.data_type
 
     def visitMethod_call(self, ctx):
@@ -185,10 +187,10 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             method_ctx = self.stbl.getMethodContext()
             for i in range(len(ctx.expr())):
                 self.visit(ctx.expr(i))
-                method_ctx.body += 'movq ' + result + ', %rdi\n'
-            method_ctx.body += 'addq $' + str(self.stbl.getStackPtr()) + ', %rsp\n'
-            method_ctx.body += 'call ' + str(ctx.ID()) + '\n'
-            method_ctx.body += 'subq $' + str(self.stbl.getStackPtr()) + ', %rsp\n'
+                method_ctx.body += indent + 'movq ' + result + ', %rdi\n'
+            method_ctx.body += indent + 'addq $' + str(self.stbl.getStackPtr()) + ', %rsp\n'
+            method_ctx.body += indent + 'call ' + str(ctx.ID()) + '\n'
+            method_ctx.body += indent + 'subq $' + str(self.stbl.getStackPtr()) + ', %rsp\n'
         else:
             line: int = ctx.start.line
             print('error on line ' + str(line) + ': method \'' + str(ctx.ID()) + '\' does not exist, method call dropped')
@@ -206,8 +208,8 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             self.stbl.pushFrame(method)
             # produce the basic method code
             method.body += method.id + ':\n'
-            method.body += 'push %rbp\n'
-            method.body += 'movq %rsp, %rbp\n'
+            method.body += indent + 'push %rbp\n'
+            method.body += indent + 'movq %rsp, %rbp\n'
             for i in range(len(ctx.param())):
                 param_id: str = ctx.param(i).ID().getText()
                 param_type: str = ctx.param(i).data_type().getText()
@@ -226,14 +228,14 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                                      param_array,
                                      line)
                     self.stbl.pushVar(param)
-                    method.body += 'movq ' + self.stbl.param_reg[i] + ', ' + str(param.addr) + '(%rbp)\n'
+                    method.body += indent + 'movq ' + self.stbl.param_reg[i] + ', ' + str(param.addr) + '(%rbp)\n'
             if ctx.block():
                 self.visit(ctx.block())
             else:
                 self.visit(ctx.expr())
             if not method.has_return:
-                method.body += 'pop %rbp\n'
-                method.body += 'ret\n'
+                method.body += indent + 'pop %rbp\n'
+                method.body += indent + 'ret\n'
             self.data += method.data
             self.body += method.body
             self.stbl.popFrame()
@@ -253,12 +255,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         # push the method to the symbol table
         self.stbl.pushMethod(method)
         method.body += method.id + ':\n'
-        method.body += 'push %rbp\n'
-        method.body += 'movq %rsp, %rbp\n'
+        method.body += indent + 'push %rbp\n'
+        method.body += indent + 'movq %rsp, %rbp\n'
         self.visitChildren(ctx)
         if not method.has_return:
-            method.body += 'pop %rbp\n'
-            method.body += 'ret\n'
+            method.body += indent + 'pop %rbp\n'
+            method.body += indent + 'ret\n'
         self.data += method.data
         self.body += method.body
         self.stbl.popFrame()
