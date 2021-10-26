@@ -237,10 +237,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                         method.body += indent + 'movq ' + str(pointer + param_size) + '(%rsp), ' + result + '\n'
                         # you can't move pointer to pointer directly
                         method.body += indent + 'movq ' + result + ', ' + str(param.addr) + '(%rbp)\n'
-            if ctx.block():
-                self.visit(ctx.block())
-            else:
-                self.visit(ctx.expr())
+            self.visitChildren(ctx)
             if not method.has_return:
                 method.body += indent + 'pop %rbp\n'
                 method.body += indent + 'ret\n'
