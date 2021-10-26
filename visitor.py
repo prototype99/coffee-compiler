@@ -187,7 +187,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             method_ctx = self.stbl.getMethodContext()
             for i in range(len(ctx.expr())):
                 self.visit(ctx.expr(i))
-                method_ctx.body += indent + 'movq ' + result + ', %rdi\n'
+                method_ctx.body += indent + 'movq ' + result + ', ' + self.stbl.param_reg[i] + '\n'
             method_ctx.body += indent + 'addq $' + str(self.stbl.getStackPtr()) + ', %rsp\n'
             method_ctx.body += indent + 'call ' + str(ctx.ID()) + '\n'
             method_ctx.body += indent + 'subq $' + str(self.stbl.getStackPtr()) + ', %rsp\n'
