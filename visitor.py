@@ -210,6 +210,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             method.body += method.id + ':\n'
             method.body += indent + 'push %rbp\n'
             method.body += indent + 'movq %rsp, %rbp\n'
+            pointer = 8
             for i in range(len(ctx.param())):
                 param_id: str = ctx.param(i).ID().getText()
                 param_type: str = ctx.param(i).data_type().getText()
@@ -228,7 +229,6 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                                      param_array,
                                      line)
                     self.stbl.pushVar(param)
-                    pointer = 8
                     # only up to 6 values can fit into registers
                     if i < 6:
                         method.body += indent + 'movq ' + self.stbl.param_reg[i] + ', ' + str(param.addr) + '(%rbp)\n'
