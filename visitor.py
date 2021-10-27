@@ -185,9 +185,15 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         # rule 4
         if self.stbl.find(str(ctx.ID())):
             method_ctx = self.stbl.getMethodContext()
-            for i in range(len(ctx.expr())):
+            param_len = len(ctx.expr())
+            if param_len > 5:
+                pointer = -8 - (param_len - 5) * -8
+            for i in range(param_len):
                 self.visit(ctx.expr(i))
-                method_ctx.body += indent + 'movq ' + result + ', ' + self.stbl.param_reg[i] + '\n'
+                if i < 6:
+                    method_ctx.body += indent + 'movq ' + result + ', ' + self.stbl.param_reg[i] + '\n'
+                else:
+                    method_ctx.body += indent + 'movq ' + result + ', ' + str(pointer) + '(%rsp)\n'
             method_ctx.body += indent + 'addq $' + str(self.stbl.getStackPtr()) + ', %rsp\n'
             method_ctx.body += indent + 'call ' + str(ctx.ID()) + '\n'
             method_ctx.body += indent + 'subq $' + str(self.stbl.getStackPtr()) + ', %rsp\n'
