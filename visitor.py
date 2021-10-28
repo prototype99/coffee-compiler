@@ -189,18 +189,21 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             param_len = len(ctx.expr())
             # if there are more thn 6 arguments we must allocate a stack size
             if param_len > 5:
-                # this assumes that there are no arrays
-                pointer = (param_len - 6) * -8
+                # this assumes that there are no arrays, also no there will be no etymological explanation
+                porigin = (param_len - 6) * -8
+                pointer = porigin
             for i in range(param_len):
                 self.visit(ctx.expr(i))
                 if i < 6:
                     method_ctx.body += indent + 'movq ' + result + ', ' + self.stbl.param_reg[i] + '\n'
                 else:
                     method_ctx.body += indent + 'movq ' + result + ', ' + str(pointer) + '(%rsp)\n'
+                    # move to next pointer
+                    pointer += 8
             # you have to make sure it starts at the largest pointer
-            method_ctx.body += indent + 'addq $' + str(self.stbl.getStackPtr() + pointer) + ', %rsp\n'
+            method_ctx.body += indent + 'addq $' + str(self.stbl.getStackPtr() + porigin) + ', %rsp\n'
             method_ctx.body += indent + 'call ' + str(ctx.ID()) + '\n'
-            method_ctx.body += indent + 'subq $' + str(self.stbl.getStackPtr() + pointer) + ', %rsp\n'
+            method_ctx.body += indent + 'subq $' + str(self.stbl.getStackPtr() + porigin) + ', %rsp\n'
         else:
             line: int = ctx.start.line
             print('error on line ' + str(line) + ': method \'' + str(ctx.ID()) + '\' does not exist, method call dropped')
@@ -243,8 +246,9 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                     if i < 6:
                         method.body += indent + 'movq ' + self.stbl.param_reg[i] + ', ' + str(param.addr) + '(%rbp)\n'
                     else:
+                        pointer += param_size
                         # this whole pointer + param_size thing would allow for arrays, I don't think we're expected to do arrays, but whatever
-                        method.body += indent + 'movq ' + str(pointer + param_size) + '(%rsp), ' + result + '\n'
+                        method.body += indent + 'movq ' + str(pointer) + '(%rsp), ' + result + '\n'
                         # you can't move pointer to pointer directly
                         method.body += indent + 'movq ' + result + ', ' + str(param.addr) + '(%rbp)\n'
             self.visitChildren(ctx)
