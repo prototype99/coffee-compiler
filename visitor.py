@@ -187,7 +187,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             method_ctx = self.stbl.getMethodContext()
             param_len = len(ctx.expr())
             if param_len > 5:
-                pointer = (param_len - 5) * -8
+                pointer = (param_len - 6) * -8
             for i in range(param_len):
                 self.visit(ctx.expr(i))
                 if i < 6:
