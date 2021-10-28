@@ -3,6 +3,7 @@
 # I definitely need to work on dealing with nesting
 # completed semantic analysis tasks: 1, 2
 # TODO: add code for rules : 5, 7, 26
+# completed codegen tasks: 2
 
 # TODO: add more shared message/duplicate check functions
 import antlr4 as antlr
@@ -186,7 +187,9 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         if self.stbl.find(str(ctx.ID())):
             method_ctx = self.stbl.getMethodContext()
             param_len = len(ctx.expr())
+            # if there are more thn 6 arguments we must allocate a stack size
             if param_len > 5:
+                # this assumes that there are no arrays
                 pointer = (param_len - 6) * -8
             for i in range(param_len):
                 self.visit(ctx.expr(i))
