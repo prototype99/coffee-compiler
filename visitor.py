@@ -194,9 +194,10 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                     method_ctx.body += indent + 'movq ' + result + ', ' + self.stbl.param_reg[i] + '\n'
                 else:
                     method_ctx.body += indent + 'movq ' + result + ', ' + str(pointer) + '(%rsp)\n'
-            method_ctx.body += indent + 'addq $' + str(self.stbl.getStackPtr()) + ', %rsp\n'
+            # you have to make sure it starts at the largest pointer
+            method_ctx.body += indent + 'addq $' + str(self.stbl.getStackPtr() + pointer) + ', %rsp\n'
             method_ctx.body += indent + 'call ' + str(ctx.ID()) + '\n'
-            method_ctx.body += indent + 'subq $' + str(self.stbl.getStackPtr()) + ', %rsp\n'
+            method_ctx.body += indent + 'subq $' + str(self.stbl.getStackPtr() + pointer) + ', %rsp\n'
         else:
             line: int = ctx.start.line
             print('error on line ' + str(line) + ': method \'' + str(ctx.ID()) + '\' does not exist, method call dropped')
