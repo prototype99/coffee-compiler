@@ -325,14 +325,14 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
 
 # load base test file
-filein = open('./test.coffee', 'r')
+# filein = open('./test.coffee', 'r')
 # filein = open('1a-original.coffee', 'r')
 # filein = open('1b-original.coffee', 'r')
 # filein = open('2b-original.coffee', 'r')
 # filein = open('2b-8arg.coffee', 'r')
 # filein = open('2b-6arg.coffee', 'r')
 # filein = open('2b-1arg.coffee', 'r')
-# filein = open('2c-original.coffee', 'r')
+filein = open('2c-original.coffee', 'r')
 # read whatever file was enabled
 source_code = filein.read()
 filein.close()
