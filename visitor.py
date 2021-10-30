@@ -195,7 +195,10 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             if param_len > 5:
                 # this assumes that there are no arrays, also no there will be no etymological explanation
                 porigin = (param_len - 6) * -8
-                pointer = porigin
+            # we need an else clause to prevent null pointers
+            else:
+                porigin = 0
+            pointer = porigin
             for i in range(param_len):
                 self.visit(ctx.expr(i))
                 if i < 6:
