@@ -134,7 +134,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                            var_array,
                            line)
             self.stbl.pushVar(var)
-        self.visitChildren(ctx)
+        self.visitChildren(ctx.var_decl())
 
     def visitIf(self, ctx):
         method_ctx = self.stbl.getMethodContext()
