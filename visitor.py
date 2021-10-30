@@ -115,6 +115,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             return self.visitChildren(ctx)
 
     def visitGlobal_decl(self, ctx):
+        method_ctx = self.stbl.getMethodContext()
         line: int = ctx.start.line
         for i in range(len(ctx.var_decl().var_assign())):
             var_id: str = ctx.var_decl().var_assign(i).var().ID().getText()
@@ -126,9 +127,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             if ctx.var_decl().var_assign(i).expr():
                 # visit the expression
                 self.visit(ctx.var_decl().var_assign(i).expr())
+            global_var_size = var_size(var_array, ctx.var_decl(), i, line, var_id)
+            # add global variable to code
+            method_ctx.data += indent + '.comm ' + var_id + ',' + str(global_var_size) + '\n'
             var: Var = Var(var_id,
                            ctx.var_decl().data_type().getText(),
-                           var_size(var_array, ctx.var_decl(), i, line, var_id),
+                           global_var_size,
                            Var.GLOBAL,
                            var_array,
                            line)
