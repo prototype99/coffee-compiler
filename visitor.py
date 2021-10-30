@@ -300,8 +300,9 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.visitChildren(ctx)
 
     def visitVar_assign(self, ctx):
-        print('aaaaaaaaaaaaaaaaaaaaaaaa')
+        method_ctx = self.stbl.getMethodContext()
         self.visitChildren(ctx)
+        method_ctx.body += indent + 'movq ' + result + ', ' + ctx.var().getText() + '(%rip)\n'
 
     def visitVar_decl(self, ctx):
         line: int = ctx.start.line
