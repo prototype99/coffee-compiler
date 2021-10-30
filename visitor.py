@@ -113,6 +113,24 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         else:
             return self.visitChildren(ctx)
 
+    def visitFor(self, ctx):
+        method_ctx = self.stbl.getMethodContext()
+        start_label = self.stbl.getNextLabel()
+        end_label = self.stbl.getNextLabel()
+        self.stbl.pushScope()
+        loop_var_id = ctx.loop_var().getText()
+        loop_var = Var(loop_var_id, 'int', 8, Var.LOCAL, False, ctx.start.line)
+        self.stbl.pushVar(loop_var)
+        # TODO: create and initialise low variable
+        # TODO: create and initialise high variable
+        # TODO: create and initialise step variable
+        # TODO: initialise loop variable
+        method_ctx.body += start_label + ':\n'
+        self.visit(ctx.block())
+        # TODO: increment loop variable
+        # TODO: check loop termination criterion
+        method_ctx.body += end_label + ':\n'
+
     def visitGlobal_decl(self, ctx):
         method_ctx = self.stbl.getMethodContext()
         line: int = ctx.start.line
