@@ -299,6 +299,9 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             print('error on line ' + str(line) + ': return type specified for void method \'' + method_ctx.id + '\' declared on line ' + str(method_ctx.line))
         self.visitChildren(ctx)
 
+    def visitVar_assign(self, ctx):
+        print('aaaaaaaaaaaaaaaaaaaaaaaa')
+
     def visitVar_decl(self, ctx):
         line: int = ctx.start.line
         for i in range(len(ctx.var_assign())):
