@@ -302,6 +302,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
     def visitVar_assign(self, ctx):
         print('aaaaaaaaaaaaaaaaaaaaaaaa')
+        self.visitChildren(ctx)
 
     def visitVar_decl(self, ctx):
         line: int = ctx.start.line
@@ -320,6 +321,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                            var_array,
                            line)
             self.stbl.pushVar(var)
+        self.visitChildren(ctx)
 
 
 # load base test file
