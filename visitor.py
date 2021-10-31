@@ -151,13 +151,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             global_var_size = var_size(var_array, ctx.var_decl(), i, line, var_id)
             # add global variable to code
             method_ctx.data += indent + '.comm ' + var_id + ',' + str(global_var_size) + '\n'
-            var: Var = Var(var_id,
-                           ctx.var_decl().data_type().getText(),
-                           global_var_size,
-                           Var.GLOBAL,
-                           var_array,
-                           line)
-            self.stbl.pushVar(var)
+            self.stbl.pushVar(Var(var_id,
+                                  ctx.var_decl().data_type().getText(),
+                                  global_var_size,
+                                  Var.GLOBAL,
+                                  var_array,
+                                  line))
         self.visitChildren(ctx.var_decl())
 
     def visitIf(self, ctx):
@@ -339,13 +338,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             if var:
                 print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(
                     var.line) + ' in same scope')
-            var: Var = Var(var_id,
-                           ctx.data_type().getText(),
-                           var_size(var_array, ctx, i, line, var_id),
-                           Var.LOCAL,
-                           var_array,
-                           line)
-            self.stbl.pushVar(var)
+            self.stbl.pushVar(Var(var_id,
+                                  ctx.data_type().getText(),
+                                  var_size(var_array, ctx, i, line, var_id),
+                                  Var.LOCAL,
+                                  var_array,
+                                  line))
         self.visitChildren(ctx)
 
 
