@@ -123,9 +123,9 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.stbl.pushVar(loop_var)
         # TODO: this implementation is pretty basic, I could probably add compatibility with expressions that aren't just simple int literals
         limits: CoffeeParser.LimitContext = ctx.limit()
-        # TODO: create and initialise low variable
-        # TODO: create and initialise high variable
-        # TODO: create and initialise step variable
+        low = limits.low()
+        high = limits.high()
+        step = limits.step()
         # TODO: initialise loop variable
         method_ctx.body += start_label + ':\n'
         self.visit(ctx.block())
