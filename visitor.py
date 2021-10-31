@@ -61,6 +61,31 @@ class Method(Method):
                 print('warning on line ' + str(self.line) + ': method \'' + self.id + '\' method does not always return a value')
 
 
+# symboltable, but now it can directly init and push variables in two curious ways
+class SymbolTable(SymbolTable):
+    def __init__(self):
+        super().__init__()
+
+    # you are still strictly speaking getting the address, you're just doing a lot of other things to get there lol
+    def getAddr(self):
+        print('tyzdth')
+
+    def pushVar(self, ctx, var_id):
+        var_id = var_id.getText()
+        line: int = ctx.start.line
+        var_array: bool = array_check(ctx)
+        var: Var = super().peek(var_id)
+        # rule 2
+        if var:
+            print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(var.line) + ' in same scope')
+        super().pushVar(Var(var_id,
+                            ctx.data_type().getText(),
+                            var_size(var_array, ctx, line, var_id),
+                            Var.LOCAL,
+                            var_array,
+                            line))
+
+
 # define main visitor class
 class CoffeeTreeVisitor(CoffeeVisitor):
     def __init__(self):
@@ -118,7 +143,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         start_label = self.stbl.getNextLabel()
         end_label = self.stbl.getNextLabel()
         self.stbl.pushScope()
-        self.stbl.pushVar(Var(ctx.loop_var().getText(), 'int', 8, Var.LOCAL, False, ctx.start.line))
+        # self.stbl.pushVar(Var(ctx.loop_var().getText(), 'int', 8, Var.LOCAL, False, ctx.start.line))
         # TODO: this implementation is pretty basic, I could probably add compatibility with expressions that aren't just simple int literals
         limits: CoffeeParser.LimitContext = ctx.limit()
         low = limits.low()
@@ -147,12 +172,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         global_var_size = var_size(var_array, ctx.var_decl(), line, var_id)
         # add global variable to code
         method_ctx.data += indent + '.comm ' + var_id + ',' + str(global_var_size) + '\n'
-        self.stbl.pushVar(Var(var_id,
-                              ctx.var_decl().data_type().getText(),
-                              global_var_size,
-                              Var.GLOBAL,
-                              var_array,
-                              line))
+        # self.stbl.pushVar(Var(var_id,
+        #                      ctx.var_decl().data_type().getText(),
+        #                      global_var_size,
+        #                      Var.GLOBAL,
+        #                      var_array,
+        #                      line))
         self.visitChildren(ctx.var_decl())
 
     def visitIf(self, ctx):
@@ -265,7 +290,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                                      Var.LOCAL,
                                      param_array,
                                      line)
-                    self.stbl.pushVar(param)
+                    # self.stbl.pushVar(param)
                     # only up to 6 values can fit into registers
                     if i < 6:
                         method.body += indent + 'movq ' + self.stbl.param_reg[i] + ', ' + str(param.addr) + '(%rbp)\n'
@@ -333,12 +358,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         if var:
             print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(
                 var.line) + ' in same scope')
-        self.stbl.pushVar(Var(var_id,
-                              ctx.data_type().getText(),
-                              var_size(var_array, ctx, line, var_id),
-                              Var.LOCAL,
-                              var_array,
-                              line))
+        # self.stbl.pushVar(Var(var_id,
+        #                      ctx.data_type().getText(),
+        #                      var_size(var_array, ctx, line, var_id),
+        #                      Var.LOCAL,
+        #                      var_array,
+        #                      line))
         self.visitChildren(ctx)
 
 
