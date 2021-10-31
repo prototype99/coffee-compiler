@@ -132,6 +132,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         # TODO: increment loop variable
         # TODO: check loop termination criterion
         method_ctx.body += end_label + ':\n'
+        self.stbl.popScope()
 
     def visitGlobal_decl(self, ctx):
         method_ctx = self.stbl.getMethodContext()
