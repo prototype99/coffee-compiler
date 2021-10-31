@@ -124,8 +124,11 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         # TODO: this implementation is pretty basic, I could probably add compatibility with expressions that aren't just simple int literals
         limits: CoffeeParser.LimitContext = ctx.limit()
         low = limits.low()
+        method_ctx.body += indent + 'movq $' + low.getText() + ', ' + result + '\n'
         high = limits.high()
+        method_ctx.body += indent + 'movq $' + high.getText() + ', ' + result + '\n'
         step = limits.step()
+        method_ctx.body += indent + 'movq $' + step.getText() + ', ' + result + '\n'
         # TODO: initialise loop variable
         method_ctx.body += start_label + ':\n'
         self.visit(ctx.block())
