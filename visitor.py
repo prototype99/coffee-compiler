@@ -121,6 +121,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         loop_var_id = ctx.loop_var().getText()
         loop_var = Var(loop_var_id, 'int', 8, Var.LOCAL, False, ctx.start.line)
         self.stbl.pushVar(loop_var)
+        # TODO: this implementation is pretty basic, I could probably add compatibility with expressions that aren't just simple int literals
         # TODO: create and initialise low variable
         # TODO: create and initialise high variable
         # TODO: create and initialise step variable
