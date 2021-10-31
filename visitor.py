@@ -16,6 +16,7 @@ from CoffeeUtil import Var, Method, Import, SymbolTable
 # constants used to improve codegen readability
 # we add indents to make diffs smoother
 indent = '  '
+# register named for readability purposes
 result = '%rax'
 
 
