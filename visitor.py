@@ -10,8 +10,7 @@ import os
 from CoffeeLexer import CoffeeLexer
 from CoffeeVisitor import CoffeeVisitor
 from CoffeeParser import CoffeeParser
-# remember to add Loop for loops
-from CoffeeUtil import Var, Method, Import, SymbolTable
+from CoffeeUtil import Import, Loop, Method, SymbolTable, Var
 
 # constants used to improve codegen readability
 # we add indents to make diffs smoother
