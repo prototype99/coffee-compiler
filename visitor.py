@@ -20,13 +20,13 @@ result = '%rax'
 
 
 # define some static helper functions
-def array_check(ctx, i):
-    return ctx.var_assign(i).var().INT_LIT()
+def array_check(ctx):
+    return ctx.var_assign(0).var().INT_LIT()
 
 
-def var_size(isarray, ctx, i, line, var_id):
+def var_size(isarray, ctx, line, var_id):
     if isarray:
-        size: int = ctx.var_assign(i).var().INT_LIT().getText() * 8
+        size: int = ctx.var_assign(0).var().INT_LIT().getText() * 8
         # catch rule 14
         if int(size) == 0:
             print('error on line ' + str(line) + ': array \'' + var_id + '\' has an illegal zero length')
@@ -138,22 +138,21 @@ class CoffeeTreeVisitor(CoffeeVisitor):
     def visitGlobal_decl(self, ctx):
         method_ctx = self.stbl.getMethodContext()
         line: int = ctx.start.line
-        for i in range(len(ctx.var_decl().var_assign())):
-            var_id: str = ctx.var_decl().var_assign(i).var().ID().getText()
-            var_array: bool = array_check(ctx.var_decl(), i)
-            var: Var = self.stbl.find(var_id)
-            # rule 2
-            if var:
-                print('error on line ' + str(line) + ': global var \'' + var_id + '\' already declared on line ' + str(var.line))
-            global_var_size = var_size(var_array, ctx.var_decl(), i, line, var_id)
-            # add global variable to code
-            method_ctx.data += indent + '.comm ' + var_id + ',' + str(global_var_size) + '\n'
-            self.stbl.pushVar(Var(var_id,
-                                  ctx.var_decl().data_type().getText(),
-                                  global_var_size,
-                                  Var.GLOBAL,
-                                  var_array,
-                                  line))
+        var_id: str = ctx.var_decl().var_assign(0).var().ID().getText()
+        var_array: bool = array_check(ctx.var_decl())
+        var: Var = self.stbl.find(var_id)
+        # rule 2
+        if var:
+            print('error on line ' + str(line) + ': global var \'' + var_id + '\' already declared on line ' + str(var.line))
+        global_var_size = var_size(var_array, ctx.var_decl(), line, var_id)
+        # add global variable to code
+        method_ctx.data += indent + '.comm ' + var_id + ',' + str(global_var_size) + '\n'
+        self.stbl.pushVar(Var(var_id,
+                              ctx.var_decl().data_type().getText(),
+                              global_var_size,
+                              Var.GLOBAL,
+                              var_array,
+                              line))
         self.visitChildren(ctx.var_decl())
 
     def visitIf(self, ctx):
@@ -327,20 +326,19 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
     def visitVar_decl(self, ctx):
         line: int = ctx.start.line
-        for i in range(len(ctx.var_assign())):
-            var_id: str = ctx.var_assign(i).var().ID().getText()
-            var_array: bool = array_check(ctx, i)
-            var: Var = self.stbl.peek(var_id)
-            # rule 2
-            if var:
-                print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(
-                    var.line) + ' in same scope')
-            self.stbl.pushVar(Var(var_id,
-                                  ctx.data_type().getText(),
-                                  var_size(var_array, ctx, i, line, var_id),
-                                  Var.LOCAL,
-                                  var_array,
-                                  line))
+        var_id: str = ctx.var_assign(0).var().ID().getText()
+        var_array: bool = array_check(ctx)
+        var: Var = self.stbl.peek(var_id)
+        # rule 2
+        if var:
+            print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(
+                var.line) + ' in same scope')
+        self.stbl.pushVar(Var(var_id,
+                              ctx.data_type().getText(),
+                              var_size(var_array, ctx, line, var_id),
+                              Var.LOCAL,
+                              var_array,
+                              line))
         self.visitChildren(ctx)
 
 
