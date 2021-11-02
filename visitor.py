@@ -63,27 +63,21 @@ class Method(Method):
 
 # var, but now it plays with the symboltable
 class Var(Var):
-    def __init__(self):
-        super().__init__()
-
-    # you are still strictly speaking getting the address, you're just doing a lot of other things to get there lol
-    def getAddr(self, ctx, var_id, data_type, is_global):
-        self.pushVar(ctx, var_id, data_type, is_global)
-
-    def pushVar(self, ctx, var_id, data_type, is_global):
+    def __init__(self, ctx, stbl, var_id, data_type, is_global):
         var_id = var_id.getText()
         line: int = ctx.start.line
         var_array: bool = array_check(ctx)
-        var: Var = super().peek(var_id)
+        var: Var = stbl.peek(var_id)
         # rule 2
         if var:
             print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(var.line) + ' in same scope')
-        super().pushVar(Var(var_id,
-                            data_type,
-                            var_size(var_array, ctx, line, var_id),
-                            int(is_global),
-                            var_array,
-                            line))
+        super().__init__(var_id,
+                         data_type,
+                         var_size(var_array, ctx, line, var_id),
+                         int(is_global),
+                         var_array,
+                         line)
+        stbl.pushVar(self)
 
 
 # define main visitor class
