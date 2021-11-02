@@ -61,8 +61,8 @@ class Method(Method):
                 print('warning on line ' + str(self.line) + ': method \'' + self.id + '\' method does not always return a value')
 
 
-# symboltable, but now it can directly init and push variables in two curious ways
-class SymbolTable(SymbolTable):
+# var, but now it plays with the symboltable
+class Var(Var):
     def __init__(self):
         super().__init__()
 
