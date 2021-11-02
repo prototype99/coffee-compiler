@@ -5,6 +5,7 @@
 # completed codegen tasks: 2
 
 # TODO: add more shared message/duplicate check functions
+import antlr4
 import antlr4 as antlr
 import os
 from CoffeeLexer import CoffeeLexer
@@ -63,10 +64,11 @@ class Method(Method):
 
 # var, but now it plays with the symboltable
 class Var(Var):
-    def __init__(self, ctx, stbl, var_id, data_type, is_global):
+    # typing must be specified to explain where start comes from
+    def __init__(self, ctx: antlr4.ParserRuleContext, stbl, var_id, data_type, is_global):
         var_id = var_id.getText()
         line: int = ctx.start.line
-        var_array: bool = array_check(ctx)
+        var_array: bool = False # array_check(ctx)
         var: Var = stbl.peek(var_id)
         # rule 2
         if var:
@@ -137,7 +139,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         start_label = self.stbl.getNextLabel()
         end_label = self.stbl.getNextLabel()
         self.stbl.pushScope()
-        # self.stbl.pushVar(Var(ctx.loop_var().getText(), 'int', 8, Var.LOCAL, False, ctx.start.line))
+        Var(ctx, self.stbl, ctx.loop_var(), 'int', False)
         # TODO: this implementation is pretty basic, I could probably add compatibility with expressions that aren't just simple int literals
         limits: CoffeeParser.LimitContext = ctx.limit()
         low = limits.low()
