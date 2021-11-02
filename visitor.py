@@ -67,8 +67,8 @@ class SymbolTable(SymbolTable):
         super().__init__()
 
     # you are still strictly speaking getting the address, you're just doing a lot of other things to get there lol
-    def getAddr(self):
-        print('tyzdth')
+    def getAddr(self, ctx, var_id, data_type, is_global):
+        self.pushVar(ctx, var_id, data_type, is_global)
 
     def pushVar(self, ctx, var_id, data_type, is_global):
         var_id = var_id.getText()
