@@ -70,7 +70,7 @@ class SymbolTable(SymbolTable):
     def getAddr(self):
         print('tyzdth')
 
-    def pushVar(self, ctx, var_id):
+    def pushVar(self, ctx, var_id, data_type, is_global):
         var_id = var_id.getText()
         line: int = ctx.start.line
         var_array: bool = array_check(ctx)
@@ -79,9 +79,9 @@ class SymbolTable(SymbolTable):
         if var:
             print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(var.line) + ' in same scope')
         super().pushVar(Var(var_id,
-                            ctx.data_type().getText(),
+                            data_type,
                             var_size(var_array, ctx, line, var_id),
-                            Var.LOCAL,
+                            int(is_global),
                             var_array,
                             line))
 
