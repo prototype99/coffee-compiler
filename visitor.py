@@ -273,7 +273,6 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                 param_id: str = ctx.param(i).ID().getText()
                 param_type: str = ctx.param(i).data_type().getText()
                 param_size: int = 8
-                param_array: bool = False
                 param: Var = self.stbl.peek(param_id)
                 # rule 2
                 if param:
@@ -284,7 +283,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                                      param_type,
                                      param_size,
                                      Var.LOCAL,
-                                     param_array,
+                                     False,
                                      line)
                     # self.stbl.pushVar(param)
                     # only up to 6 values can fit into registers
