@@ -67,9 +67,9 @@ class Var(Var):
     # typing must be specified to explain where start comes from
     def __init__(self, ctx: antlr4.ParserRuleContext, stbl, var_id, data_type, is_global):
         var_id = var_id.getText()
-        line: int = ctx.start.line
         var_array: bool = False # array_check(ctx)
         var: Var = stbl.peek(var_id)
+        line: int = ctx.start.line
         # rule 2
         if var:
             print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(var.line) + ' in same scope')
