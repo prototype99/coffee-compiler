@@ -59,7 +59,7 @@ class Var(Var):
                          line)
         stbl.pushVar(self)
 
-    # we don't always want to check for an array
+    # actions that are only relevant if we expect an array
     def array_check(self, ctx):
         arrlit = ctx.var_assign(0).var().INT_LIT()
         # it's more performant to just allow same value reassignment here
