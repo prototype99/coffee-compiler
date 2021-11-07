@@ -150,19 +150,18 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         method_ctx = self.stbl.getMethodContext()
         line: int = ctx.start.line
         var_id: str = ctx.var_decl().var_assign(0).var().ID()
-        var_array: bool = array_check(ctx.var_decl())
         var: Var = self.stbl.find(var_id)
         # rule 2
         if var:
             print('error on line ' + str(line) + ': global var \'' + var_id + '\' already declared on line ' + str(var.line))
-        global_var_size = var_size(var_array, ctx.var_decl(), line, var_id)
+        var = Var(ctx,
+                  self.stbl,
+                  var_id,
+                  ctx.var_decl().data_type().getText(),
+                  True)
+        var.array_check(ctx.var_decl())
         # add global variable to code
-        method_ctx.data += indent + '.comm ' + var_id + ',' + str(global_var_size) + '\n'
-        Var(ctx,
-            self.stbl,
-            var_id,
-            ctx.var_decl().data_type().getText(),
-            True)
+        method_ctx.data += indent + '.comm ' + var_id + ',' + str(var.size) + '\n'
         self.visitChildren(ctx.var_decl())
 
     def visitIf(self, ctx):
@@ -336,17 +335,17 @@ class CoffeeTreeVisitor(CoffeeVisitor):
     def visitVar_decl(self, ctx):
         line: int = ctx.start.line
         var_id: str = ctx.var_assign(0).var().ID().getText()
-        var_array: bool = array_check(ctx)
         var: Var = self.stbl.peek(var_id)
         # rule 2
         if var:
             print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(
                 var.line) + ' in same scope')
-        Var(ctx,
-            self.stbl,
-            var_id,
-            ctx.data_type().getText(),
-            False)
+        var = Var(ctx,
+                  self.stbl,
+                  var_id,
+                  ctx.data_type().getText(),
+                  False)
+        var.array_check(ctx)
         self.visitChildren(ctx)
 
 
