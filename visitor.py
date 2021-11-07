@@ -4,7 +4,6 @@
 # TODO: add code for rules : 5, 7, 26
 # completed codegen tasks: 2
 
-# TODO: add more shared message/duplicate check functions
 import antlr4 as antlr
 import os
 from CoffeeLexer import CoffeeLexer
@@ -20,6 +19,7 @@ result = '%rax'
 
 
 # define some static helper functions
+# TODO: add more shared message/duplicate check functions
 def array_check(ctx):
     return ctx.var_assign(0).var().INT_LIT()
 
