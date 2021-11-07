@@ -359,6 +359,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         if var:
             print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(
                 var.line) + ' in same scope')
+        # ctx: antlr4.ParserRuleContext, stbl, var_id, data_type, is_global
+        Var(ctx,
+            self.stbl,
+            var_id,
+            ctx.data_type().getText(),
+            False)
         # self.stbl.pushVar(Var(var_id,
         #                      ctx.data_type().getText(),
         #                      var_size(var_array, ctx, line, var_id),
