@@ -63,7 +63,8 @@ class Method(Method):
 
 # var, but now it plays with the symboltable
 class Var(Var):
-    def __init__(self, ctx, stbl, var_id, data_type, is_global):
+    # enforcing bool helps catch errors
+    def __init__(self, ctx, stbl, var_id, data_type, is_global: bool):
         var_id = var_id.getText()
         var_array: bool = False  # array_check(ctx)
         var: Var = stbl.peek(var_id)
