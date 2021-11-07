@@ -158,18 +158,11 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         global_var_size = var_size(var_array, ctx.var_decl(), line, var_id)
         # add global variable to code
         method_ctx.data += indent + '.comm ' + var_id + ',' + str(global_var_size) + '\n'
-        # ctx: antlr4.ParserRuleContext, stbl, var_id, data_type, is_global
         Var(ctx,
             self.stbl,
             var_id,
             ctx.var_decl().data_type().getText(),
             True)
-        # self.stbl.pushVar(Var(var_id,
-        #                      ctx.var_decl().data_type().getText(),
-        #                      global_var_size,
-        #                      Var.GLOBAL,
-        #                      var_array,
-        #                      line))
         self.visitChildren(ctx.var_decl())
 
     def visitIf(self, ctx):
@@ -349,18 +342,11 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         if var:
             print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(
                 var.line) + ' in same scope')
-        # ctx: antlr4.ParserRuleContext, stbl, var_id, data_type, is_global
         Var(ctx,
             self.stbl,
             var_id,
             ctx.data_type().getText(),
             False)
-        # self.stbl.pushVar(Var(var_id,
-        #                      ctx.data_type().getText(),
-        #                      var_size(var_array, ctx, line, var_id),
-        #                      Var.LOCAL,
-        #                      var_array,
-        #                      line))
         self.visitChildren(ctx)
 
 
