@@ -92,24 +92,20 @@ class CoffeeTreeVisitor(CoffeeVisitor):
     # shared function for variable declaration contexts
     def decl(self, ctx, is_global):
         if is_global:
-            method_ctx = self.stbl.getMethodContext()
-            var = Var(ctx,
-                      self.stbl,
-                      ctx.var_decl().var_assign(0).var().ID(),
-                      ctx.var_decl().data_type().getText(),
-                      True)
-            var.array_check(ctx.var_decl())
-            # add global variable to code
-            method_ctx.data += indent + '.comm ' + var.id + ',' + str(var.size) + '\n'
-            self.visitChildren(ctx.var_decl())
+            ctwox = ctx.var_decl()
         else:
-            var = Var(ctx,
-                      self.stbl,
-                      ctx.var_assign(0).var().ID().getText(),
-                      ctx.data_type().getText(),
-                      is_global)
-            var.array_check(ctx)
-            self.visitChildren(ctx)
+            ctwox = ctx
+        var = Var(ctx,
+                  self.stbl,
+                  ctwox.var_assign(0).var().ID().getText(),
+                  ctwox.data_type().getText(),
+                  is_global)
+        var.array_check(ctwox)
+        # add global variable to code
+        if is_global:
+            method_ctx = self.stbl.getMethodContext()
+            method_ctx.data += indent + '.comm ' + var.id + ',' + str(var.size) + '\n'
+        self.visitChildren(ctwox)
 
     # def visitAssign(self, ctx):
     #     pass
