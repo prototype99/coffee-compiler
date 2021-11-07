@@ -69,7 +69,8 @@ class Var(Var):
             # catch rule 14
             if int(size) == 0:
                 print('error on line ' + str(self.line) + ': array \'' + self.id + '\' has an illegal zero length')
-            self.size = size
+            else:
+                self.size = size
 
 
 # define main visitor class
