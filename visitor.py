@@ -4,6 +4,7 @@
 # TODO: add code for rules : 5, 7, 26
 # completed codegen tasks: 2
 
+# TODO: add more shared message/duplicate check functions
 import antlr4 as antlr
 import os
 from CoffeeLexer import CoffeeLexer
@@ -16,23 +17,6 @@ from CoffeeUtil import Import, Loop, Method, SymbolTable, Var
 indent = '  '
 # register named for readability purposes
 result = '%rax'
-
-
-# define some static helper functions
-# TODO: add more shared message/duplicate check functions
-def array_check(ctx):
-    return ctx.var_assign(0).var().INT_LIT()
-
-
-def var_size(isarray, ctx, line, var_id):
-    if isarray:
-        size: int = ctx.var_assign(0).var().INT_LIT().getText() * 8
-        # catch rule 14
-        if int(size) == 0:
-            print('error on line ' + str(line) + ': array \'' + var_id + '\' has an illegal zero length')
-        return size
-    else:
-        return 8
 
 
 # method with extended semantic analysis capabilities
@@ -66,7 +50,6 @@ class Var(Var):
     # enforcing bool helps catch errors
     def __init__(self, ctx, stbl, var_id, data_type, is_global: bool):
         var_id = var_id.getText()
-        var_array: bool = False  # array_check(ctx)
         var: Var = stbl.peek(var_id)
         line: int = ctx.start.line
         # rule 2
@@ -74,11 +57,23 @@ class Var(Var):
             print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(var.line) + ' in same scope')
         super().__init__(var_id,
                          data_type,
-                         var_size(var_array, ctx, line, var_id),
+                         8,
                          int(is_global),
-                         var_array,
+                         False,
                          line)
         stbl.pushVar(self)
+
+    # we don't always want to check for an array
+    def array_check(self, ctx):
+        arrlit = ctx.var_assign(0).var().INT_LIT()
+        # it's more performant to just allow same value reassignment here
+        self.is_array = arrlit
+        if arrlit:
+            size: int = arrlit.getText() * 8
+            # catch rule 14
+            if int(size) == 0:
+                print('error on line ' + str(self.line) + ': array \'' + self.id + '\' has an illegal zero length')
+            self.size = size
 
 
 # define main visitor class
