@@ -47,8 +47,8 @@ class Method(Method):
 
 # var, but now it plays with the symboltable
 class Var(Var):
-    # enforcing bool helps catch errors
-    def __init__(self, ctx, stbl, var_id, data_type, is_global: bool):
+    # enforcing bool helps catch errors, ctx typing must be specified to explain where start comes from
+    def __init__(self, ctx: antlr.ParserRuleContext, stbl, var_id, data_type, is_global: bool):
         var_id = var_id.getText()
         var: Var = stbl.peek(var_id)
         line: int = ctx.start.line
