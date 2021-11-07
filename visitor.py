@@ -97,7 +97,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             prefix = ctx
         var = Var(ctx,
                   self.stbl,
-                  prefix.var_assign(0).var().ID().getText(),
+                  prefix.var_assign(0).var().ID(),
                   prefix.data_type().getText(),
                   is_global)
         var.array_check(prefix)
@@ -175,7 +175,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.stbl.popScope()
 
     def visitGlobal_decl(self, ctx):
-        self.decl(ctx, False)
+        self.decl(ctx, True)
 
     def visitIf(self, ctx):
         method_ctx = self.stbl.getMethodContext()
