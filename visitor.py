@@ -158,10 +158,9 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
     def visitGlobal_decl(self, ctx):
         method_ctx = self.stbl.getMethodContext()
-        var_id: str = ctx.var_decl().var_assign(0).var().ID()
         var = Var(ctx,
                   self.stbl,
-                  var_id,
+                  ctx.var_decl().var_assign(0).var().ID(),
                   ctx.var_decl().data_type().getText(),
                   True)
         var.array_check(ctx.var_decl())
@@ -338,10 +337,9 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         method_ctx.body += indent + 'movq ' + result + ', ' + ctx.var().getText() + '(%rip)\n'
 
     def visitVar_decl(self, ctx):
-        var_id: str = ctx.var_assign(0).var().ID().getText()
         var = Var(ctx,
                   self.stbl,
-                  var_id,
+                  ctx.var_assign(0).var().ID().getText(),
                   ctx.data_type().getText(),
                   False)
         var.array_check(ctx)
