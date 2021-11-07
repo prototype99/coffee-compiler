@@ -50,11 +50,7 @@ class Var(Var):
     # enforcing bool helps catch errors, ctx typing must be specified to explain where start comes from
     def __init__(self, ctx: antlr.ParserRuleContext, stbl, var_id, data_type, is_global: bool):
         var_id = var_id.getText()
-        var: Var = stbl.peek(var_id)
         line: int = ctx.start.line
-        # rule 2
-        if var:
-            print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(var.line) + ' in same scope')
         super().__init__(var_id,
                          data_type,
                          8,
