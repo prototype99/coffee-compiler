@@ -161,7 +161,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                   True)
         var.array_check(ctx.var_decl())
         # add global variable to code
-        method_ctx.data += indent + '.comm ' + var_id + ',' + str(var.size) + '\n'
+        method_ctx.data += indent + '.comm ' + var.id + ',' + str(var.size) + '\n'
         self.visitChildren(ctx.var_decl())
 
     def visitIf(self, ctx):
