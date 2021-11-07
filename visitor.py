@@ -5,7 +5,6 @@
 # completed codegen tasks: 2
 
 # TODO: add more shared message/duplicate check functions
-import antlr4
 import antlr4 as antlr
 import os
 from CoffeeLexer import CoffeeLexer
@@ -64,8 +63,7 @@ class Method(Method):
 
 # var, but now it plays with the symboltable
 class Var(Var):
-    # typing must be specified to explain where start comes from
-    def __init__(self, ctx: antlr4.ParserRuleContext, stbl, var_id, data_type, is_global):
+    def __init__(self, ctx, stbl, var_id, data_type, is_global):
         var_id = var_id.getText()
         var_array: bool = False  # array_check(ctx)
         var: Var = stbl.peek(var_id)
