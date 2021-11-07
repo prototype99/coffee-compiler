@@ -51,6 +51,15 @@ class Var(Var):
     def __init__(self, ctx: antlr.ParserRuleContext, stbl, var_id, data_type, is_global: bool):
         var_id = var_id.getText()
         line: int = ctx.start.line
+        # rule 2
+        if is_global:
+            var: Var = stbl.find(var_id)
+            if var:
+                print('error on line ' + str(line) + ': global var \'' + var_id + '\' already declared on line ' + str(var.line))
+        else:
+            var: Var = stbl.peek(var_id)
+            if var:
+                print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(var.line) + ' in same scope')
         super().__init__(var_id,
                          data_type,
                          8,
@@ -149,12 +158,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
     def visitGlobal_decl(self, ctx):
         method_ctx = self.stbl.getMethodContext()
-        line: int = ctx.start.line
         var_id: str = ctx.var_decl().var_assign(0).var().ID()
-        var: Var = self.stbl.find(var_id)
-        # rule 2
-        if var:
-            print('error on line ' + str(line) + ': global var \'' + var_id + '\' already declared on line ' + str(var.line))
         var = Var(ctx,
                   self.stbl,
                   var_id,
@@ -334,13 +338,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         method_ctx.body += indent + 'movq ' + result + ', ' + ctx.var().getText() + '(%rip)\n'
 
     def visitVar_decl(self, ctx):
-        line: int = ctx.start.line
         var_id: str = ctx.var_assign(0).var().ID().getText()
-        var: Var = self.stbl.peek(var_id)
-        # rule 2
-        if var:
-            print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(
-                var.line) + ' in same scope')
         var = Var(ctx,
                   self.stbl,
                   var_id,
