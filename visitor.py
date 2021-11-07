@@ -67,7 +67,7 @@ class Var(Var):
     # typing must be specified to explain where start comes from
     def __init__(self, ctx: antlr4.ParserRuleContext, stbl, var_id, data_type, is_global):
         var_id = var_id.getText()
-        var_array: bool = False # array_check(ctx)
+        var_array: bool = False  # array_check(ctx)
         var: Var = stbl.peek(var_id)
         line: int = ctx.start.line
         # rule 2
@@ -159,7 +159,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
     def visitGlobal_decl(self, ctx):
         method_ctx = self.stbl.getMethodContext()
         line: int = ctx.start.line
-        var_id: str = ctx.var_decl().var_assign(0).var().ID().getText()
+        var_id: str = ctx.var_decl().var_assign(0).var().ID()
         var_array: bool = array_check(ctx.var_decl())
         var: Var = self.stbl.find(var_id)
         # rule 2
@@ -168,6 +168,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         global_var_size = var_size(var_array, ctx.var_decl(), line, var_id)
         # add global variable to code
         method_ctx.data += indent + '.comm ' + var_id + ',' + str(global_var_size) + '\n'
+        # ctx: antlr4.ParserRuleContext, stbl, var_id, data_type, is_global
+        Var(ctx,
+            self.stbl,
+            var_id,
+            ctx.var_decl().data_type().getText(),
+            True)
         # self.stbl.pushVar(Var(var_id,
         #                      ctx.var_decl().data_type().getText(),
         #                      global_var_size,
