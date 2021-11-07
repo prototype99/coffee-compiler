@@ -89,6 +89,28 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.data: str = '.data\n'
         self.body: str = '.text\n.global main\n'
 
+    # shared function for variable declaration contexts
+    def decl(self, ctx, is_global):
+        if is_global:
+            method_ctx = self.stbl.getMethodContext()
+            var = Var(ctx,
+                      self.stbl,
+                      ctx.var_decl().var_assign(0).var().ID(),
+                      ctx.var_decl().data_type().getText(),
+                      True)
+            var.array_check(ctx.var_decl())
+            # add global variable to code
+            method_ctx.data += indent + '.comm ' + var.id + ',' + str(var.size) + '\n'
+            self.visitChildren(ctx.var_decl())
+        else:
+            var = Var(ctx,
+                      self.stbl,
+                      ctx.var_assign(0).var().ID().getText(),
+                      ctx.data_type().getText(),
+                      is_global)
+            var.array_check(ctx)
+            self.visitChildren(ctx)
+
     # def visitAssign(self, ctx):
     #     pass
 
@@ -157,16 +179,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.stbl.popScope()
 
     def visitGlobal_decl(self, ctx):
-        method_ctx = self.stbl.getMethodContext()
-        var = Var(ctx,
-                  self.stbl,
-                  ctx.var_decl().var_assign(0).var().ID(),
-                  ctx.var_decl().data_type().getText(),
-                  True)
-        var.array_check(ctx.var_decl())
-        # add global variable to code
-        method_ctx.data += indent + '.comm ' + var.id + ',' + str(var.size) + '\n'
-        self.visitChildren(ctx.var_decl())
+        self.decl(ctx, False)
 
     def visitIf(self, ctx):
         method_ctx = self.stbl.getMethodContext()
@@ -337,13 +350,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         method_ctx.body += indent + 'movq ' + result + ', ' + ctx.var().getText() + '(%rip)\n'
 
     def visitVar_decl(self, ctx):
-        var = Var(ctx,
-                  self.stbl,
-                  ctx.var_assign(0).var().ID().getText(),
-                  ctx.data_type().getText(),
-                  False)
-        var.array_check(ctx)
-        self.visitChildren(ctx)
+        self.decl(ctx, False)
 
 
 # load base test file
