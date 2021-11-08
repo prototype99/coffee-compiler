@@ -95,11 +95,10 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             prefix = ctx.var_decl()
         else:
             prefix = ctx
-        var = Var(ctx,
-                  self.stbl,
-                  prefix.var_assign(0).var().ID(),
-                  prefix.data_type().getText(),
-                  is_global)
+        var = self.new_var(ctx,
+                           prefix.var_assign(0).var().ID(),
+                           prefix.data_type().getText(),
+                           is_global)
         var.array_check(prefix)
         # add global variable to code
         if is_global:
@@ -108,11 +107,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.visitChildren(prefix)
 
     def new_var(self, ctx: antlr.ParserRuleContext, var_id, data_type, is_global: bool):
-        Var(ctx,
-            self.stbl,
-            var_id,
-            data_type,
-            is_global)
+        var = Var(ctx,
+                  self.stbl,
+                  var_id,
+                  data_type,
+                  is_global)
+        return var
 
     # def visitAssign(self, ctx):
     #     pass
