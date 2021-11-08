@@ -132,6 +132,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         method_ctx = self.stbl.getMethodContext()
         method_ctx.body += indent + 'movq ' + ctx.location().getText() + '(%rip), ' + result + '\n'
         self.visitChildren(ctx)
+        method_ctx.body += indent + 'movq ' + result + ', ' + ctx.location().getText() + '(%rip)\n'
 
     def visitBlock(self, ctx):
         line: int = ctx.start.line
