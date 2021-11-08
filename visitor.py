@@ -181,12 +181,15 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.new_var(ctx, ctx.loop_var(), 'int', 0)
         # TODO: this implementation is pretty basic, I could probably add compatibility with expressions that aren't just simple int literals
         limits: CoffeeParser.LimitContext = ctx.limit()
-        low = limits.low()
-        method_ctx.body += indent + 'movq $' + low.getText() + ', ' + result + '\n'
-        high = limits.high()
-        method_ctx.body += indent + 'movq $' + high.getText() + ', ' + result + '\n'
-        step = limits.step()
-        method_ctx.body += indent + 'movq $' + step.getText() + ', ' + result + '\n'
+        low = self.new_var(ctx, limits.low(), 'int', 0)
+        method_ctx.body += indent + 'movq $' + low.id + ', ' + result + '\n'
+        method_ctx.body += indent + 'movq ' + result + ', ' + str(low.addr) + '(%rbp)\n'
+        high = self.new_var(ctx, limits.high(), 'int', 0)
+        method_ctx.body += indent + 'movq $' + high.id + ', ' + result + '\n'
+        method_ctx.body += indent + 'movq ' + result + ', ' + str(high.addr) + '(%rbp)\n'
+        step = self.new_var(ctx, limits.step(), 'int', 0)
+        method_ctx.body += indent + 'movq $' + step.id + ', ' + result + '\n'
+        method_ctx.body += indent + 'movq ' + result + ', ' + str(step.addr) + '(%rbp)\n'
         # TODO: initialise loop variable
         method_ctx.body += start_label + ':\n'
         self.visit(ctx.block())
