@@ -235,7 +235,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         if self.stbl.find(str(ctx.ID())):
             method_ctx = self.stbl.getMethodContext()
             param_len = len(ctx.expr())
-            # if there are more thn 6 arguments we must allocate a stack size
+            # if there are more than 6 arguments we must allocate a stack size
             if param_len > 5:
                 # this assumes that there are no arrays, also no there will be no etymological explanation
                 porigin = (param_len - 6) * -8
