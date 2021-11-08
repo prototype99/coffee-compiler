@@ -178,8 +178,6 @@ class CoffeeTreeVisitor(CoffeeVisitor):
 
     def visitFor(self, ctx):
         method_ctx = self.stbl.getMethodContext()
-        start_label = self.stbl.getNextLabel()
-        end_label = self.stbl.getNextLabel()
         self.stbl.pushScope()
         loop = self.new_var(ctx, ctx.loop_var(), 'int', 0)
         # TODO: this implementation is pretty basic, I could probably add compatibility with expressions that aren't just simple int literals
@@ -196,11 +194,11 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         # initialise loop variable
         method_ctx.body += indent + 'movq ' + str(low.addr) + '(%rbp), ' + result + '\n'
         method_ctx.body += indent + 'movq ' + result + ', ' + str(loop.addr) + '(%rbp)\n'
-        method_ctx.body += start_label + ':\n'
+        method_ctx.body += self.stbl.getNextLabel() + ':\n'
         self.visit(ctx.block())
         # TODO: increment loop variable
         # TODO: check loop termination criterion
-        method_ctx.body += end_label + ':\n'
+        method_ctx.body += self.stbl.getNextLabel() + ':\n'
         self.stbl.popScope()
 
     def visitGlobal_decl(self, ctx):
