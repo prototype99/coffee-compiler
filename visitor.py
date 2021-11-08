@@ -162,7 +162,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         start_label = self.stbl.getNextLabel()
         end_label = self.stbl.getNextLabel()
         self.stbl.pushScope()
-        Var(ctx, ctx.loop_var(), 'int', False)
+        self.new_var(ctx, ctx.loop_var(), 'int', False)
         # TODO: this implementation is pretty basic, I could probably add compatibility with expressions that aren't just simple int literals
         limits: CoffeeParser.LimitContext = ctx.limit()
         low = limits.low()
@@ -276,27 +276,23 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             method.body += indent + 'movq %rsp, %rbp\n'
             pointer = 8
             for i in range(len(ctx.param())):
-                param_id: str = ctx.param(i).ID().getText()
+                param_id = ctx.param(i).ID()
                 param_type: str = ctx.param(i).data_type().getText()
-                param_size: int = 8
                 param: Var = self.stbl.peek(param_id)
                 # rule 2
                 if param:
-                    print('error on line ' + str(line) + ': param \'' + param_id + '\' already declared on line ' + str(param.line) + '. this declaration will be ignored')
+                    print('error on line ' + str(line) + ': param \'' + param_id.getText() + '\' already declared on line ' + str(param.line) + '. this declaration will be ignored')
                 else:
                     method.pushParam(param_type)
-                    param: Var = Var(param_id,
-                                     param_type,
-                                     param_size,
-                                     Var.LOCAL,
-                                     False,
-                                     line)
-                    # self.stbl.pushVar(param)
+                    param: Var = self.new_var(ctx,
+                                              param_id,
+                                              param_type,
+                                              False)
                     # only up to 6 values can fit into registers
                     if i < 6:
                         method.body += indent + 'movq ' + self.stbl.param_reg[i] + ', ' + str(param.addr) + '(%rbp)\n'
                     else:
-                        pointer += param_size
+                        pointer += 8
                         # this whole pointer + param_size thing would allow for arrays, I don't think we're expected to do arrays, but whatever
                         method.body += indent + 'movq ' + str(pointer) + '(%rsp), ' + result + '\n'
                         # you can't move pointer to pointer directly
