@@ -107,6 +107,13 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             method_ctx.data += indent + '.comm ' + var.id + ',' + str(var.size) + '\n'
         self.visitChildren(prefix)
 
+    def new_var(self, ctx: antlr.ParserRuleContext, var_id, data_type, is_global: bool):
+        Var(ctx,
+            self.stbl,
+            var_id,
+            data_type,
+            is_global)
+
     # def visitAssign(self, ctx):
     #     pass
 
