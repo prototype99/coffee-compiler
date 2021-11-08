@@ -45,7 +45,7 @@ class Method(Method):
                 print('warning on line ' + str(self.line) + ': method \'' + self.id + '\' method does not always return a value')
 
 
-# var, but now it plays with the symboltable
+# var, but syntax is slightly altered
 class Var(Var):
     # enforcing bool helps catch errors, ctx typing must be specified to explain where start comes from
     def __init__(self, var_id, data_type, is_global: bool, line):
@@ -94,6 +94,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             method_ctx.data += indent + '.comm ' + var.id + ',' + str(var.size) + '\n'
         self.visitChildren(prefix)
 
+    # performs validation before pushing variables to table. returns variable, which also functions as an inefficient but versatile boolean
     # 0: local, 1: global, 2: param
     def new_var(self, ctx: antlr.ParserRuleContext, var_id, data_type, scope):
         # the most likely outcome
