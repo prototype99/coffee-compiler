@@ -99,12 +99,12 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         # rule 2
         if is_global:
             var: Var = self.stbl.find(var_id)
-            if var:
-                print('error on line ' + str(line) + ': global var \'' + var_id + '\' already declared on line ' + str(var.line))
+            scope = 'global'
         else:
             var: Var = self.stbl.peek(var_id)
-            if var:
-                print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(var.line) + ' in same scope')
+            scope = 'local'
+        if var:
+            print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(var.line) + ' in ' + scope + ' scope')
         var = Var(var_id,
                   data_type,
                   is_global,
