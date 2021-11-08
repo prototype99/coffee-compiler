@@ -178,7 +178,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         start_label = self.stbl.getNextLabel()
         end_label = self.stbl.getNextLabel()
         self.stbl.pushScope()
-        self.new_var(ctx, ctx.loop_var(), 'int', 0)
+        loop = self.new_var(ctx, ctx.loop_var(), 'int', 0)
         # TODO: this implementation is pretty basic, I could probably add compatibility with expressions that aren't just simple int literals
         limits: CoffeeParser.LimitContext = ctx.limit()
         low = self.new_var(ctx, limits.low(), 'int', 0)
@@ -190,7 +190,9 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         step = self.new_var(ctx, limits.step(), 'int', 0)
         method_ctx.body += indent + 'movq $' + step.id + ', ' + result + '\n'
         method_ctx.body += indent + 'movq ' + result + ', ' + str(step.addr) + '(%rbp)\n'
-        # TODO: initialise loop variable
+        # initialise loop variable
+        method_ctx.body += indent + 'movq ' + str(low.addr) + '(%rbp), ' + result + '\n'
+        method_ctx.body += indent + 'movq ' + result + ', ' + str(loop.addr) + '(%rbp)\n'
         method_ctx.body += start_label + ':\n'
         self.visit(ctx.block())
         # TODO: increment loop variable
