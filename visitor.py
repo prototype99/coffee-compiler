@@ -48,25 +48,13 @@ class Method(Method):
 # var, but now it plays with the symboltable
 class Var(Var):
     # enforcing bool helps catch errors, ctx typing must be specified to explain where start comes from
-    def __init__(self, ctx: antlr.ParserRuleContext, stbl, var_id, data_type, is_global: bool):
-        var_id = var_id.getText()
-        line: int = ctx.start.line
-        # rule 2
-        if is_global:
-            var: Var = stbl.find(var_id)
-            if var:
-                print('error on line ' + str(line) + ': global var \'' + var_id + '\' already declared on line ' + str(var.line))
-        else:
-            var: Var = stbl.peek(var_id)
-            if var:
-                print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(var.line) + ' in same scope')
-        super().__init__(var_id,
+    def __init__(self, var_id, data_type, is_global: bool, line):
+        super().__init__(var_id.getText(),
                          data_type,
                          8,
                          int(is_global),
                          False,
                          line)
-        stbl.pushVar(self)
 
     # actions that are only relevant if we expect an array
     def array_check(self, ctx):
@@ -107,11 +95,21 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.visitChildren(prefix)
 
     def new_var(self, ctx: antlr.ParserRuleContext, var_id, data_type, is_global: bool):
-        var = Var(ctx,
-                  self.stbl,
-                  var_id,
+        line: int = ctx.start.line
+        # rule 2
+        if is_global:
+            var: Var = self.stbl.find(var_id)
+            if var:
+                print('error on line ' + str(line) + ': global var \'' + var_id + '\' already declared on line ' + str(var.line))
+        else:
+            var: Var = self.stbl.peek(var_id)
+            if var:
+                print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(var.line) + ' in same scope')
+        var = Var(var_id,
                   data_type,
-                  is_global)
+                  is_global,
+                  line)
+        self.stbl.pushVar(var)
         return var
 
     # def visitAssign(self, ctx):
@@ -164,7 +162,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         start_label = self.stbl.getNextLabel()
         end_label = self.stbl.getNextLabel()
         self.stbl.pushScope()
-        Var(ctx, self.stbl, ctx.loop_var(), 'int', False)
+        Var(ctx, ctx.loop_var(), 'int', False)
         # TODO: this implementation is pretty basic, I could probably add compatibility with expressions that aren't just simple int literals
         limits: CoffeeParser.LimitContext = ctx.limit()
         low = limits.low()
