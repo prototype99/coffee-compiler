@@ -128,8 +128,10 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             self.stbl.pushVar(var)
             return var
 
-    # def visitAssign(self, ctx):
-    #     pass
+    def visitAssign(self, ctx):
+        method_ctx = self.stbl.getMethodContext()
+        method_ctx.body += indent + 'movq ' + ctx.location().getText() + '(%rip), ' + result + '\n'
+        self.visitChildren(ctx)
 
     def visitBlock(self, ctx):
         line: int = ctx.start.line
