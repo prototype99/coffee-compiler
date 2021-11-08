@@ -86,7 +86,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         var = self.new_var(ctx,
                            prefix.var_assign(0).var().ID(),
                            prefix.data_type().getText(),
-                           is_global)
+                           int(is_global))
         var.array_check(prefix)
         # add global variable to code
         if is_global:
@@ -94,23 +94,38 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             method_ctx.data += indent + '.comm ' + var.id + ',' + str(var.size) + '\n'
         self.visitChildren(prefix)
 
-    def new_var(self, ctx: antlr.ParserRuleContext, var_id, data_type, is_global: bool):
-        line: int = ctx.start.line
-        # rule 2
+    # 0: local, 1: global, 2: param
+    def new_var(self, ctx: antlr.ParserRuleContext, var_id, data_type, scope):
+        # the most likely outcome
+        is_global = False
+        # rule 2, unfortunately python has no case statements so we must suffer
+        if scope == 2:
+            msg_scope = 'param'
+        elif scope == 1:
+            msg_scope = 'global'
+            is_global = True
+        elif scope == 0:
+            msg_scope = 'local'
+        # this condition shouldn't really be possible but whatever
+        else:
+            print('Invalid scope encountered')
+            return False
+        # ya these if statements are a bit out of hand
         if is_global:
             var: Var = self.stbl.find(var_id)
-            scope = 'global'
         else:
             var: Var = self.stbl.peek(var_id)
-            scope = 'local'
+        line: int = ctx.start.line
         if var:
-            print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(var.line) + ' in ' + scope + ' scope')
-        var = Var(var_id,
-                  data_type,
-                  is_global,
-                  line)
-        self.stbl.pushVar(var)
-        return var
+            print('error on line ' + str(line) + ': var \'' + var_id + '\' already declared on line ' + str(var.line) + ' in ' + msg_scope + ' scope, this declaration will be ignored')
+            return False
+        else:
+            var = Var(var_id,
+                      data_type,
+                      is_global,
+                      line)
+            self.stbl.pushVar(var)
+            return var
 
     # def visitAssign(self, ctx):
     #     pass
@@ -162,7 +177,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         start_label = self.stbl.getNextLabel()
         end_label = self.stbl.getNextLabel()
         self.stbl.pushScope()
-        self.new_var(ctx, ctx.loop_var(), 'int', False)
+        self.new_var(ctx, ctx.loop_var(), 'int', 0)
         # TODO: this implementation is pretty basic, I could probably add compatibility with expressions that aren't just simple int literals
         limits: CoffeeParser.LimitContext = ctx.limit()
         low = limits.low()
@@ -276,18 +291,15 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             method.body += indent + 'movq %rsp, %rbp\n'
             pointer = 8
             for i in range(len(ctx.param())):
-                param_id = ctx.param(i).ID()
                 param_type: str = ctx.param(i).data_type().getText()
-                param: Var = self.stbl.peek(param_id)
-                # rule 2
+                param: Var = self.new_var(ctx,
+                                          ctx.param(i).ID(),
+                                          param_type,
+                                          2)
+                # we only want to do all this if we actually have a parameter
                 if param:
-                    print('error on line ' + str(line) + ': param \'' + param_id.getText() + '\' already declared on line ' + str(param.line) + '. this declaration will be ignored')
-                else:
                     method.pushParam(param_type)
-                    param: Var = self.new_var(ctx,
-                                              param_id,
-                                              param_type,
-                                              False)
+                    # TODO: I'm not sure if this correctly handles skipped parameters
                     # only up to 6 values can fit into registers
                     if i < 6:
                         method.body += indent + 'movq ' + self.stbl.param_reg[i] + ', ' + str(param.addr) + '(%rbp)\n'
@@ -350,6 +362,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.decl(ctx, False)
 
 
+# TODO: create more robust testing functionality
 # load base test file
 # filein = open('./test.coffee', 'r')
 # filein = open('1a-original.coffee', 'r')
