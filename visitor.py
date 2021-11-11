@@ -370,6 +370,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
     def visitReturn(self, ctx):
         method_ctx: Method = self.stbl.getMethodContext()
         line: int = ctx.start.line
+        # TODO: this looks kinda messy, idk, i could probably improve it
         # rule 8, starts freaking out if it doesn't get type checked
         if method_ctx.id == 'main' and isinstance(ctx.expr().literal(), CoffeeParser.LiteralContext) and not ctx.expr().literal().INT_LIT():
             print('error on line ' + str(line) + ': main method may only return an integer value')
