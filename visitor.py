@@ -205,7 +205,11 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         method_ctx.body += indent + 'addq %r11, ' + result + '\n'
         # push the loop variable
         method_ctx.body += indent + 'movq ' + result + ', ' + str(loop.addr) + '(%rbp)\n'
-        # TODO: check loop termination criterion
+        # move max for loop value to register
+        method_ctx.body += indent + 'movq ' + str(high.addr) + '(%rbp), %r10\n'
+        # check if loop variable has hit the max value
+        method_ctx.body += indent + 'cmp %r10, ' + result + '\n'
+        # check loop termination criterion
         self.stbl.popScope()
 
     def visitGlobal_decl(self, ctx):
