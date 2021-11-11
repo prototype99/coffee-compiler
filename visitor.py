@@ -212,7 +212,11 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         method_ctx.body += indent + 'movq ' + str(high.addr) + '(%rbp), %r10\n'
         # check if loop variable has hit the max value
         method_ctx.body += indent + 'cmp %r10, ' + result + '\n'
-        # check loop termination criterion
+        # terminate loop if iteration has finished...
+        method_ctx.body += indent + 'jge ' + end_label + '\n'
+        # otherwise keep iterating
+        method_ctx.body += indent + 'jmp ' + start_label + '\n'
+        method_ctx.body += end_label + ':\n'
         self.stbl.popScope()
 
     def visitGlobal_decl(self, ctx):
