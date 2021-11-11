@@ -181,6 +181,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.stbl.pushScope()
         loop = self.new_var(ctx, ctx.loop_var(), 'int', 0)
         # TODO: this implementation is pretty basic, I could probably add compatibility with expressions that aren't just simple int literals
+        # TODO: theres a lot of code duplication
         limits: CoffeeParser.LimitContext = ctx.limit()
         low = self.new_var(ctx, limits.low(), 'int', 0)
         method_ctx.body += indent + 'movq $' + low.id + ', ' + result + '\n'
@@ -197,8 +198,13 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         method_ctx.body += self.stbl.getNextLabel() + ':\n'
         self.visit(ctx.block())
         method_ctx.body += self.stbl.getNextLabel() + ':\n'
-        # increment loop variable
+        # move required variables into registers
         method_ctx.body += indent + 'movq ' + str(loop.addr) + '(%rbp), ' + result + '\n'
+        method_ctx.body += indent + 'movq ' + str(step.addr) + '(%rbp), %r11\n'
+        # increment loop variable
+        method_ctx.body += indent + 'addq %r11, ' + result + '\n'
+        # push the loop variable
+        method_ctx.body += indent + 'movq ' + result + ', ' + str(loop.addr) + '(%rbp)\n'
         # TODO: check loop termination criterion
         self.stbl.popScope()
 
