@@ -196,9 +196,10 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         method_ctx.body += indent + 'movq ' + result + ', ' + str(loop.addr) + '(%rbp)\n'
         method_ctx.body += self.stbl.getNextLabel() + ':\n'
         self.visit(ctx.block())
-        # TODO: increment loop variable
-        # TODO: check loop termination criterion
         method_ctx.body += self.stbl.getNextLabel() + ':\n'
+        # increment loop variable
+        method_ctx.body += indent + 'movq ' + str(loop.addr) + '(%rbp), ' + result + '\n'
+        # TODO: check loop termination criterion
         self.stbl.popScope()
 
     def visitGlobal_decl(self, ctx):
