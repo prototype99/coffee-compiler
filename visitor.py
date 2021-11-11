@@ -370,13 +370,20 @@ class CoffeeTreeVisitor(CoffeeVisitor):
     def visitReturn(self, ctx):
         method_ctx: Method = self.stbl.getMethodContext()
         line: int = ctx.start.line
+        # sentinel value to prevent invalid returns
+        is_valid_return: bool = True
         # TODO: this looks kinda messy, idk, i could probably improve it
         # rule 8, starts freaking out if it doesn't get type checked
         if method_ctx.id == 'main' and isinstance(ctx.expr().literal(), CoffeeParser.LiteralContext) and not ctx.expr().literal().INT_LIT():
             print('error on line ' + str(line) + ': main method may only return an integer value')
+            is_valid_return = False
         # rule 6
         if ctx.expr() and method_ctx.return_type == 'void':
             print('error on line ' + str(line) + ': return type specified for void method \'' + method_ctx.id + '\' declared on line ' + str(method_ctx.line))
+            is_valid_return = False
+        # I doubt that this covers every use case, but.... it's something
+        if is_valid_return:
+            method_ctx.body += indent + 'movq ' + ctx.expr().location().getText() + '(%rip), ' + result + '\n'
         self.visitChildren(ctx)
 
     def visitVar_assign(self, ctx):
