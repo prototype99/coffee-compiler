@@ -66,8 +66,12 @@ class Var(Var):
             # catch rule 14
             if int(size) == 0:
                 print('error on line ' + str(self.line) + ': array \'' + self.id + '\' has an illegal zero length')
+                return False
             else:
                 self.size = size
+                return True
+        else:
+            return True
 
 
 # define main visitor class
@@ -87,13 +91,11 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                            prefix.var_assign(0).var().ID(),
                            prefix.data_type().getText(),
                            int(is_global))
-        # this is all only relevant if we actually have a successful var
-        if var:
-            var.array_check(prefix)
+        # ya it's a really weirdly specific criteria
+        if is_global and var and var.array_check(prefix):
             # add global variable to code
-            if is_global:
-                method_ctx = self.stbl.getMethodContext()
-                method_ctx.data += indent + '.comm ' + var.id + ',' + str(var.size) + '\n'
+            method_ctx = self.stbl.getMethodContext()
+            method_ctx.data += indent + '.comm ' + var.id + ',' + str(var.size) + '\n'
         self.visitChildren(prefix)
 
     # performs validation before pushing variables to table. returns variable, which also functions as an inefficient but versatile boolean
