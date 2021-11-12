@@ -19,6 +19,33 @@ indent = '  '
 result = '%rax'
 
 
+def test_file(file):
+    # load base test file
+    filein = open('./' + file + '.coffee', 'r')
+
+    # read whatever file was enabled
+    source_code = filein.read()
+    filein.close()
+
+    # create Coffee Visitor object
+    visitor = CoffeeTreeVisitor()
+
+    # visit nodes from tree root
+    visitor.visit(CoffeeParser(antlr.CommonTokenStream(CoffeeLexer(antlr.InputStream(source_code)))).program())
+
+    # print assembly output code
+    code = visitor.data + visitor.body
+    print(code)
+
+    # save the assembly file to a.s
+    fileout = open('a.s', 'w')
+    fileout.write(code)
+    fileout.close()
+
+    # assemble and link via gcc
+    os.system("gcc a.s -lm ; ./a.out ; echo $?")
+
+
 # method with extended semantic analysis capabilities
 class Method(Method):
     def __init__(self, id: str, return_type: str, line: int):
@@ -408,42 +435,8 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.decl(ctx, False)
 
 
-# TODO: create more robust testing functionality
-# load base test file
-filein = open('./test.coffee', 'r')
-# filein = open('1a-original.coffee', 'r')
-# filein = open('1b-original.coffee', 'r')
-# filein = open('2b-original.coffee', 'r')
-# filein = open('2b-8arg.coffee', 'r')
-# filein = open('2b-6arg.coffee', 'r')
-# filein = open('2b-1arg.coffee', 'r')
-# filein = open('2c-original.coffee', 'r')
-# read whatever file was enabled
-source_code = filein.read()
-filein.close()
-
-# create a token stream from source code
-lexer = CoffeeLexer(antlr.InputStream(source_code))
-stream = antlr.CommonTokenStream(lexer)
-
-# parse token stream
-parser = CoffeeParser(stream)
-tree = parser.program()
-
-# create Coffee Visitor object
-visitor = CoffeeTreeVisitor()
-
-# visit nodes from tree root
-visitor.visit(tree)
-
-# print assembly output code
-code = visitor.data + visitor.body
-print(code)
-
-# save the assembly file to a.s
-fileout = open('a.s', 'w')
-fileout.write(code)
-fileout.close()
-
-# assemble and link via gcc
-os.system("gcc a.s -lm ; ./a.out ; echo $?")
+test_file('test')
+# test_file('1a')
+# test_file('1b')
+# test_file('2b')
+# test_file('2c')
