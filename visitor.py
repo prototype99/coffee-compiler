@@ -10,9 +10,8 @@ import os
 from CoffeeLexer import CoffeeLexer
 from CoffeeVisitor import CoffeeVisitor
 from CoffeeParser import CoffeeParser
-from CoffeeUtil import Import, Loop, Method, SymbolTable, Var
+from CoffeeUtil import Import, Method, SymbolTable, Var
 
-# constants used to improve codegen readability
 # we add indents to make diffs smoother
 indent = '  '
 # register named for readability purposes
