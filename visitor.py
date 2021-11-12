@@ -451,7 +451,9 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             is_valid_return = False
         # I doubt that this covers every use case, but.... it's something
         if is_valid_return:
-            method_ctx.body += indent + 'movq ' + ctx.expr().getText() + '(%rip), ' + result + '\n'
+            # leave method calls outta this
+            if not ctx.expr().LROUND:
+                method_ctx.body += indent + 'movq ' + ctx.expr().getText() + '(%rip), ' + result + '\n'
         self.visitChildren(ctx)
 
     def visitVar_assign(self, ctx):
