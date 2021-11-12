@@ -57,6 +57,16 @@ class Error:
         print('error on line ' + self.line + ': ' + self.message)
 
 
+class ErrorID(Error):
+    def __init__(self, line: int, message, type, id):
+        super().__init__(line, message)
+        self.type = type
+        self.id = id
+
+    def print(self):
+        print('error on line ' + self.line + ': ' + self.type + '\'' + self.id + '\' ' + self.message)
+
+
 # method with extended semantic analysis capabilities
 class Method(Method):
     def __init__(self, id: str, return_type: str, line: int):
@@ -118,6 +128,17 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.stbl: SymbolTable = SymbolTable()
         self.data: str = '.data\n'
         self.body: str = '.text\n.global main\n'
+        self.error_msgs = []
+
+    def add_error(self, ctx, message):
+        e = Error(ctx.start.line, message)
+        e.print()
+        self.error_msgs.append(e)
+
+    def add_error_id(self, ctx, message, type, id):
+        e = ErrorID(ctx.start.line, message, type, id)
+        e.print()
+        self.error_msgs.append(e)
 
     # shared function for variable declaration contexts
     def decl(self, ctx, is_global):
@@ -438,7 +459,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.visitChildren(ctx)
         var_ctx: CoffeeParser.VarContext = ctx.var()
         if var_ctx.LSQUARE():
-            print('error on line ' + str(var_ctx.start.line) + ': assigning arrays is unsupported in this version')
+            self.add_error(var_ctx, 'assigning arrays is unsupported in this version')
         else:
             method_ctx.body += indent + 'movq ' + result + ', ' + ctx.var().getText() + '(%rip)\n'
 
