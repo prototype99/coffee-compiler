@@ -452,7 +452,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         # I doubt that this covers every use case, but.... it's something
         if is_valid_return:
             # leave method calls outta this
-            if not ctx.expr().LROUND:
+            if not ctx.expr().method_call():
                 method_ctx.body += indent + 'movq ' + ctx.expr().getText() + '(%rip), ' + result + '\n'
         self.visitChildren(ctx)
 
