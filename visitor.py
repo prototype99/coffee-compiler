@@ -47,6 +47,16 @@ def test_file(file):
     os.system("gcc a.s -lm ; ./a.out ; echo $?")
 
 
+# used to simplify errors
+class Error:
+    def __init__(self, line: int, message):
+        self.line = str(line)
+        self.message = message
+
+    def print(self):
+        print('error on line ' + self.line + ': ' + self.message)
+
+
 # method with extended semantic analysis capabilities
 class Method(Method):
     def __init__(self, id: str, return_type: str, line: int):
