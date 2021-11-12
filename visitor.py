@@ -16,6 +16,8 @@ from CoffeeUtil import Import, Method, SymbolTable, Var
 indent = '  '
 # register named for readability purposes
 result = '%rax'
+# completed tests
+tests = []
 
 
 def test_file(file):
