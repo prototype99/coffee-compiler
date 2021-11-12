@@ -319,6 +319,8 @@ class CoffeeTreeVisitor(CoffeeVisitor):
             method.body += indent + 'push %rbp\n'
             method.body += indent + 'movq %rsp, %rbp\n'
             pointer = 8
+            # used to record how many parameters are successful
+            pid = 0
             for i in range(len(ctx.param())):
                 param_type: str = ctx.param(i).data_type().getText()
                 param: Var = self.new_var(ctx,
@@ -328,16 +330,17 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                 # we only want to do all this if we actually have a parameter
                 if param:
                     method.pushParam(param_type)
-                    # TODO: I'm not sure if this correctly handles skipped parameters
                     # only up to 6 values can fit into registers
-                    if i < 6:
-                        method.body += indent + 'movq ' + self.stbl.param_reg[i] + ', ' + str(param.addr) + '(%rbp)\n'
+                    if pid < 6:
+                        method.body += indent + 'movq ' + self.stbl.param_reg[pid] + ', ' + str(param.addr) + '(%rbp)\n'
                     else:
                         pointer += 8
                         # this whole pointer + param_size thing would allow for arrays, I don't think we're expected to do arrays, but whatever
                         method.body += indent + 'movq ' + str(pointer) + '(%rsp), ' + result + '\n'
                         # you can't move pointer to pointer directly
                         method.body += indent + 'movq ' + result + ', ' + str(param.addr) + '(%rbp)\n'
+                    # count the parameter
+                    pid += 1
             self.visitChildren(ctx)
             if not method.has_return:
                 method.body += indent + 'pop %rbp\n'
