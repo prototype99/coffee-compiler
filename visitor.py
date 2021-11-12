@@ -87,11 +87,13 @@ class CoffeeTreeVisitor(CoffeeVisitor):
                            prefix.var_assign(0).var().ID(),
                            prefix.data_type().getText(),
                            int(is_global))
-        var.array_check(prefix)
-        # add global variable to code
-        if is_global:
-            method_ctx = self.stbl.getMethodContext()
-            method_ctx.data += indent + '.comm ' + var.id + ',' + str(var.size) + '\n'
+        # this is all only relevant if we actually have a successful var
+        if var:
+            var.array_check(prefix)
+            # add global variable to code
+            if is_global:
+                method_ctx = self.stbl.getMethodContext()
+                method_ctx.data += indent + '.comm ' + var.id + ',' + str(var.size) + '\n'
         self.visitChildren(prefix)
 
     # performs validation before pushing variables to table. returns variable, which also functions as an inefficient but versatile boolean
