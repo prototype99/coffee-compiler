@@ -467,6 +467,7 @@ class CoffeeTreeVisitor(CoffeeVisitor):
         self.decl(ctx, False)
 
 
+# just stick a filename in this function and away ya go!
 test_file('test')
 # test_file('1a')
 # test_file('1b')
