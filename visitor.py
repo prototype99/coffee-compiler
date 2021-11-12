@@ -1,8 +1,8 @@
 # this file should be identical for both the semantic analysis and code generation uploads. If there are any notable differences please contact for clarification
 # Oh and... sorry if it's not my best work. I briefly made the mistake of taking up an internship
-# completed semantic analysis tasks: 1, 2
+# completed semantic analysis tasks: 1 (method invocation), 2 (arithmetic logic)
 # TODO: add code for rules : 5, 7, 26
-# completed codegen tasks: 2
+# completed codegen tasks: 2 (methods), 3 (loops)
 
 # TODO: add more shared message/duplicate check functions
 import antlr4 as antlr
