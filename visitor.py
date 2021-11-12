@@ -49,7 +49,7 @@ class Method(Method):
 class Var(Var):
     # enforcing bool helps catch errors, ctx typing must be specified to explain where start comes from
     def __init__(self, var_id, data_type, is_global: bool, line):
-        super().__init__(var_id.getText(),
+        super().__init__(var_id,
                          data_type,
                          8,
                          int(is_global),
@@ -97,6 +97,8 @@ class CoffeeTreeVisitor(CoffeeVisitor):
     # performs validation before pushing variables to table. returns variable, which also functions as an inefficient but versatile boolean
     # 0: local, 1: global, 2: param
     def new_var(self, ctx: antlr.ParserRuleContext, var_id, data_type, scope):
+        # get the proper string value
+        var_id = var_id.getText()
         # the most likely outcome
         is_global = False
         # rule 2, unfortunately python has no case statements so we must suffer
