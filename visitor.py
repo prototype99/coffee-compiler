@@ -398,7 +398,11 @@ class CoffeeTreeVisitor(CoffeeVisitor):
     def visitVar_assign(self, ctx):
         method_ctx = self.stbl.getMethodContext()
         self.visitChildren(ctx)
-        method_ctx.body += indent + 'movq ' + result + ', ' + ctx.var().getText() + '(%rip)\n'
+        var_ctx: CoffeeParser.VarContext = ctx.var()
+        if var_ctx.LSQUARE():
+            print('error on line ' + str(var_ctx.start.line) + ': assigning arrays is unsupported in this version')
+        else:
+            method_ctx.body += indent + 'movq ' + result + ', ' + ctx.var().getText() + '(%rip)\n'
 
     def visitVar_decl(self, ctx):
         self.decl(ctx, False)
